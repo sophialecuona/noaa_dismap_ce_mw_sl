@@ -7,4 +7,4 @@ library(tidyverse)
 library(shinydashboard)
 library(tidyverse)
 
-
+system("git config pull.rebase false")
