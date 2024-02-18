@@ -12,14 +12,34 @@ ui <- fluidPage(
 
     tabPanel(
       title = 'Habitat Range',
-      p("Tab 1: Species Range
-- Species
-- Convert lat/long into shapefile
-- Year - indexed by colors
-- Picture of species
-- Widgets:Map, Slider, Animated???? lol
-- Need to get historic data (90’s year)
-"),
+      p("Tab 1: Species Range",
+    br(),
+    "- Species",
+    br(),
+    "- Convert lat/long into shapefile",
+    br(),
+    "- Year - indexed by colors",
+    br(),
+    "- Picture of species",
+    br(),
+    "- Widgets:Map, Slider, Animated???? lol",
+    br(),
+    "- Need to get historic data (90’s year)",
+    br(),
+    "What questions do we want to ask/answer about our data?;",
+    br(),
+    "How are the most economically important stocks moving in CA?",
+    br(),
+    "How is the CPUE changing overtime for these stocks?",
+    br(),
+    "Could correlate with policy change or new technology?",
+    br(),
+    "Water temp and lat and long increasing over time?",
+    br(),
+    "Would have to find and pull in another data set.",
+    br(),
+    "Are the surveys missing any key areas??"
+  ),
       # Embed an interactive map using an iframe
       tags$iframe(src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3312.170979609962!2d-118.48477998481262!3d34.01945408061439!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c75ddc27da13%3A0xe22fdf787b21f55e!2sCalifornia%2C%20USA!5e0!3m2!1sen!2sca!4v1647273999725!5m2!1sen!2sca",
                   height = "600px", width = "800px", frameborder = "0")
