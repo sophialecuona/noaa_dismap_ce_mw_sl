@@ -1,26 +1,39 @@
 library(shiny)
 library(bslib)
 library(tidyverse)
+library(leaflet)
 
 ui <- fluidPage(
-  theme = bs_theme(bootswatch = 'cerulean'),
+  theme = bs_theme(bootswatch = 'solar'),
+
 
   titlePanel ('California Economically Important Species Through Space and Time'),
   tabsetPanel(
 
     tabPanel(
-      title = 'Tab 1',
+      title = 'Habitat Range',
+      p("This is a paragraph on the map."),
+      # Embed an interactive map using an iframe
+      tags$iframe(src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3312.170979609962!2d-118.48477998481262!3d34.01945408061439!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c75ddc27da13%3A0xe22fdf787b21f55e!2sCalifornia%2C%20USA!5e0!3m2!1sen!2sca!4v1647273999725!5m2!1sen!2sca",
+                  height = "600px", width = "800px", frameborder = "0")
     ), ### end tab 1
 
     tabPanel(
-      title = 'Tab 2',
+      title = 'Distribution movement (years ____ - ____)',
+      sidebarPanel(
+        sliderInput("Date Range",
+                     "Select a value:",  # Slider label
+                     min = 2003,            # Minimum value
+                     max = 2022,          # Maximum value
+                     value = 2003)         # Initial value
+      ),
       sidebarLayout(
         sidebarPanel(
           h3('Select Species'),
           radioButtons(
             inputId = 'spp_button',
             label = 'Species',
-            choices = c( 'Squid', 'Dungeness Crab', 'Skipjack Tuna')
+            choices = c( 'Squid', 'Dungeness Crab', 'Chinook Salmon')
           )
         ),
         mainPanel(
@@ -30,11 +43,18 @@ ui <- fluidPage(
     ), ### end tab 2
 
     tabPanel(
-      title = 'Tab 3',
+      title = 'Distribution and Temperature',
+      sidebarPanel(
+        selectInput("species",           # Input ID
+                    "Select Species:",  # Input label
+                    choices = c('Species A', 'Species B', 'Species C'),  # Dropdown choices
+                    selected = "Species A")  # Initial selection
+      ),
+      # Additional widgets can be added here
     ), ### end tab 3
 
     tabPanel(
-      title = 'Tab 4'
+      title = 'Data Citation'
     ) ### end tab 4
 
   ) ### end of tabsetpanel
