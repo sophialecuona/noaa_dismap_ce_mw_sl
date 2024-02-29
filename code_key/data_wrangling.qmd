@@ -1,0 +1,49 @@
+---
+title: "Data Wrangling"
+author: "Sophia Lecuona"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(here)
+library(broom)
+library(janitor)
+```
+# Dungeness Crab survey data
+```{r}
+dung_survey <- read_csv(here("data/dungeness_survey_data.csv")) 
+
+dung_clean <- dung_survey %>%
+  clean_names() %>%
+  mutate(haul_id = dataset_west_coast_annual,
+         stratum = x2,
+         lat = x3,
+         long = x4,
+         depth = x5,
+         year = x6,
+         wtcpue = x7) %>%
+  select(dataset_west_coast_annual, stratum, lat, long, depth, year, wtcpue) %>%
+  drop_na()
+```
+
+# Squid survey data
+
+```{r}
+squid_survey <- read_csv(here("data/squid_survey_data.csv")) 
+
+squid_clean <- squid_survey %>%
+  clean_names() %>%
+  mutate(haul_id = dataset_west_coast_annual,
+         stratum = x2,
+         lat = x3,
+         long = x4,
+         depth = x5,
+         year = x6,
+         wtcpue = x7) %>%
+  select(dataset_west_coast_annual, stratum, lat, long, depth, year, wtcpue) %>%
+  drop_na()
+```
+
+
