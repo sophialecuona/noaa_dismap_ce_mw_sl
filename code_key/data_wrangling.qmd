@@ -24,7 +24,8 @@ dung_clean <- dung_survey %>%
          depth = x5,
          year = x6,
          wtcpue = x7) %>%
-  select(dataset_west_coast_annual, stratum, lat, long, depth, year, wtcpue) %>%
+  mutate(species = "dungeness") %>%
+  select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
   drop_na()
 ```
 
@@ -42,8 +43,83 @@ squid_clean <- squid_survey %>%
          depth = x5,
          year = x6,
          wtcpue = x7) %>%
-  select(dataset_west_coast_annual, stratum, lat, long, depth, year, wtcpue) %>%
+  mutate(species = "squid") %>%
+  select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
   drop_na()
+```
+
+# Full join crab and squid
+
+```{r}
+full_dung_squid <- full_join(
+  dung_clean,
+  squid_clean,
+  by = NULL,
+  suffix = c(".x", ".y"),
+  keep = FALSE
+)
+```
+
+## Urchin
+
+```{r}
+urchin_survey <- read_csv(here("data/northern_heart_urchin_survey.csv")) 
+
+urchin_clean <- urchin_survey %>%
+  clean_names() %>%
+  mutate(haul_id = dataset_west_coast_annual,
+         stratum = x2,
+         lat = x3,
+         long = x4,
+         depth = x5,
+         year = x6,
+         wtcpue = x7) %>%
+  mutate(species = "urchin") %>%
+  select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
+  drop_na()
+```
+
+
+# Full join with urchin
+
+```{r}
+full_dung_squid_urch <- full_join(
+  full_dung_squid,
+  urchin_clean,
+  by = NULL,
+  suffix = c(".x", ".y"),
+  keep = FALSE
+) %>%
+  filter(!wtcpue == 0)
+```
+
+*West Coast Fisheries* Port complex git remote install
+How much has catch been affected by temperature: linear model
+
+```{r}
+# Run if you don't already have devtools installed
+install.packages("devtools")
+
+# Run once devtools is successfully installed
+devtools::install_github("cfree14/wcfish", force=T)
+library(wcfish)
+
+all <- pacfin_all1
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2003-01-01"
+
+end = "2022-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 49.2),
+                longitude = c(-115, 130))$data
+  
 ```
 
 
