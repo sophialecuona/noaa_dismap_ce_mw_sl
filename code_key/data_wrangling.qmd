@@ -11,7 +11,9 @@ library(here)
 library(broom)
 library(janitor)
 ```
+
 # Dungeness Crab survey data
+
 ```{r}
 dung_survey <- read_csv(here("data/dungeness_survey_data.csv")) 
 
@@ -98,7 +100,6 @@ urchin_clean <- urchin_survey %>%
   drop_na()
 ```
 
-
 # Full join with urchin
 
 ```{r}
@@ -111,7 +112,6 @@ full_dung_squid_urch <- full_join(
 ) %>%
   filter(!wtcpue == 0)
 ```
-
 
 # Full join with urchin
 
@@ -126,9 +126,7 @@ full_dung_squid_chin <- full_join(
   filter(!wtcpue == 0)
 ```
 
-
-*West Coast Fisheries* Port complex git remote install
-How much has catch been affected by temperature: linear model
+*West Coast Fisheries* Port complex git remote install How much has catch been affected by temperature: linear model
 
 ```{r}
 # Run if you don't already have devtools installed
@@ -159,5 +157,3 @@ grid <- griddap(file_id,
                 longitude = c(-115, 130))$data
   
 ```
-
-
