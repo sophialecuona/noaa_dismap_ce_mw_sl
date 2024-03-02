@@ -24,7 +24,7 @@ summary(squid_output)
 ```{r}
 squid_plot<-ggplot(squid_rev, aes(x= year, y= value_usd))+
   geom_point()+
-  labs(x=" ", y=" Revenue USD")+
+  labs(x=" ", y="Revenue (USD)")+
   geom_abline(intercept = coef(squid_output)[1], 
               slope = coef(squid_output)[2])+
   theme_bw()
@@ -49,7 +49,7 @@ summary(chinook_output)
 ```{r}
 chinook_plot<-ggplot(chinook_rev, aes(x= year, y= value_usd))+
   geom_point()+
-  labs(x=" ", y=" ")+
+  labs(x=" ", y="Revenue (USD)")+
   geom_abline(intercept = coef(chinook_output)[1], 
               slope = coef(chinook_output)[2])+
   theme_bw()
@@ -68,7 +68,7 @@ summary(dung_output)
 ```{r}
 dung_plot<-ggplot(dung_rev, aes(x= year, y= value_usd))+
   geom_point()+
-  labs(x=" ", y=" ")+
+  labs(x=" ", y="Revenue (USD)")+
   geom_abline(intercept = coef(dung_output)[1], 
               slope = coef(dung_output)[2])+
   theme_bw()
