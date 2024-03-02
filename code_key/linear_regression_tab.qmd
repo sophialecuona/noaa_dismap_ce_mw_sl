@@ -21,6 +21,20 @@ summary(squid_output)
 
 
 ```
+```{r}
+squid_plot<-ggplot(squid_rev, aes(x= year, y= value_usd))+
+  geom_point()+
+  labs(x=" ", y=" Revenue USD")+
+  geom_abline(intercept = coef(squid_output)[1], 
+              slope = coef(squid_output)[2])+
+  theme_bw()
+
+squid_plot
+```
+
+
+
+
 
 ```{r}
 chinook_rev <- eis %>% 
@@ -31,6 +45,18 @@ chinook_output # gets only the coefficients
 summary(chinook_output)
 ```
 
+
+```{r}
+chinook_plot<-ggplot(chinook_rev, aes(x= year, y= value_usd))+
+  geom_point()+
+  labs(x=" ", y=" ")+
+  geom_abline(intercept = coef(chinook_output)[1], 
+              slope = coef(chinook_output)[2])+
+  theme_bw()
+
+chinook_plot
+```
+
 ```{r}
 dung_rev <- eis %>% 
   filter(comm_name == "Dungeness crab")
@@ -39,3 +65,14 @@ dung_output<-lm(value_usd ~ year, data=dung_rev) #linear model (lm)
 dung_output # gets only the coefficients
 summary(dung_output)
 ```
+```{r}
+dung_plot<-ggplot(dung_rev, aes(x= year, y= value_usd))+
+  geom_point()+
+  labs(x=" ", y=" ")+
+  geom_abline(intercept = coef(dung_output)[1], 
+              slope = coef(dung_output)[2])+
+  theme_bw()
+
+dung_plot
+```
+
