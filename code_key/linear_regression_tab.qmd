@@ -19,8 +19,11 @@ squid_output<-lm(value_usd ~ year, data=squid_rev) #linear model (lm)
 squid_output # gets only the coefficients
 summary(squid_output)  
 
-
+broom::tidy(squid_output) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_classic_2()
 ```
+
 ```{r}
 squid_plot<-ggplot(squid_rev, aes(x= year, y= value_usd))+
   geom_point()+
@@ -32,10 +35,6 @@ squid_plot<-ggplot(squid_rev, aes(x= year, y= value_usd))+
 squid_plot
 ```
 
-
-
-
-
 ```{r}
 chinook_rev <- eis %>% 
   filter(comm_name == "Chinook salmon")
@@ -43,8 +42,11 @@ chinook_rev <- eis %>%
 chinook_output<-lm(value_usd ~ year, data=chinook_rev) #linear model (lm) 
 chinook_output # gets only the coefficients
 summary(chinook_output)
-```
 
+broom::tidy(chinook_output) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_classic_2()
+```
 
 ```{r}
 chinook_plot<-ggplot(chinook_rev, aes(x= year, y= value_usd))+
@@ -64,7 +66,12 @@ dung_rev <- eis %>%
 dung_output<-lm(value_usd ~ year, data=dung_rev) #linear model (lm) 
 dung_output # gets only the coefficients
 summary(dung_output)
+
+broom::tidy(dung_output) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_classic_2()
 ```
+
 ```{r}
 dung_plot<-ggplot(dung_rev, aes(x= year, y= value_usd))+
   geom_point()+
@@ -75,4 +82,3 @@ dung_plot<-ggplot(dung_rev, aes(x= year, y= value_usd))+
 
 dung_plot
 ```
-
