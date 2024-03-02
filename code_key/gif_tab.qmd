@@ -4,23 +4,131 @@ format: html
 editor: visual
 ---
 
-## Quarto
+Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 12. Available online at https://www.marineregions.org/. https://doi.org/10.14284/632
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+# Read in EEZ
 
 ```{r}
-1 + 1
-```
+library(tidyverse)
+library(here)
+library(broom)
 
-You can add options to executable code like this
+# Spatial data packages
+library(sf)
+library(tmap)
+```
 
 ```{r}
-#| echo: false
-2 * 2
+ca_counties_raw_sf <- read_sf(here("data", "ca_counties2", "CA_Counties_TIGER2016.shp"))
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+```{r}
+# eez_raw_sf <- read_sf(here("data", "World_EEZ_v12_20231025", "eez_boundaries_v12.shp"))
+# 
+# eez2_raw_sf <- read_sf(here("data", "World_EEZ_v12_20231025", "eez_v12.shp"))
+```
+
+```{r}
+# eez_raw_sf %>% st_crs()
+# eez_raw_sf %>% terra::crs() #WGS84
+# 
+# eez2_raw_sf %>% st_crs()
+# eez2_raw_sf %>% terra::crs()#WGS84
+
+ca_counties_raw_sf %>% st_crs()
+ca_counties_raw_sf %>% terra::crs()
+# 
+# eez2_proj_sf <- st_transform(eez2_raw_sf, st_crs(ca_counties_raw_sf))
+```
+
+```{r}
+# plot(eez_raw_sf)
+# plot(eez2_raw_sf)
+```
+
+# Clipping to CA Counties
+
+```{r}
+# output = st_intersection(eez2_proj_sf, ca_counties_raw_sf)
+# plot(output)
+```
+
+```{r}
+# Set http.postBuffer size to 524288000 bytes (500MB)
+buffer_size_bytes <- 524288000
+
+# Execute git config command from R
+command <- paste("git config http.postBuffer", buffer_size_bytes)
+system(command)
+```
+
+```{r}
+ca_counties_sf <- ca_counties_raw_sf %>% 
+  janitor::clean_names() %>%
+  mutate(land_km2 = aland / 1e6) %>%
+  select(county = name, land_km2)
+```
+```{r}
+dung_survey <- read_csv(here("data/dungeness_survey_data.csv")) 
+
+dung_clean <- dung_survey %>%
+  clean_names() %>%
+  mutate(haul_id = dataset_west_coast_annual,
+         stratum = x2,
+         lat = x3,
+         long = x4,
+         depth = x5,
+         year = x6,
+         wtcpue = x7) %>%
+  mutate(species = "dungeness") %>%
+  select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
+  drop_na()
+
+squid_survey <- read_csv(here("data/squid_survey_data.csv")) 
+
+squid_clean <- squid_survey %>%
+  clean_names() %>%
+  mutate(haul_id = dataset_west_coast_annual,
+         stratum = x2,
+         lat = x3,
+         long = x4,
+         depth = x5,
+         year = x6,
+         wtcpue = x7) %>%
+  mutate(species = "squid") %>%
+  select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
+  drop_na()
+
+full_dung_squid <- full_join(
+  dung_clean,
+  squid_clean,
+  by = NULL,
+  suffix = c(".x", ".y"),
+  keep = FALSE
+)
+
+chinook_survey <- read_csv(here("data/chinook_salmon_survey.csv")) 
+
+chinook_clean <- chinook_survey %>%
+  clean_names() %>%
+  mutate(haul_id = dataset_west_coast_triennial,
+         stratum = x2,
+         lat = x3,
+         long = x4,
+         depth = x5,
+         year = x6,
+         wtcpue = x7) %>%
+  mutate(species = "chinook") %>%
+  select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
+  drop_na()
+
+full_dung_squid_chin <- full_join(
+  full_dung_squid,
+  chinook_clean,
+  by = NULL,
+  suffix = c(".x", ".y"),
+  keep = FALSE
+) %>%
+  filter(!wtcpue == 0)
+```
+
