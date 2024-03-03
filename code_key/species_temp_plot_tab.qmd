@@ -1,26 +1,167 @@
 ---
-title: "Plot Species/Temperature"
+title: "Plot Species/Temperature Tab"
 format: html
 editor: visual
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+## Libraries
 
 ```{r}
-1 + 1
+library(tidyverse)
+library(here)
+library(broom)
+library(janitor)
+library(cowplot)
+library(dplyr)
 ```
 
-You can add options to executable code like this
+## Input Data 
+
+Take from Data Wrangling Tab
 
 ```{r}
-#| echo: false
-2 * 2
+eis <- all %>%
+  select(year, comm_name, value_usd, landings_mt, landings_kg, landings_lb, price_usd_lb) %>%
+  filter(comm_name %in% c("Chinook salmon", "Dungeness crab", "Market squid"))
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+## Depth Related Plots
+
+```{r}
+
+#Depth vs Year - all species
+ggplot(full_dung_squid_chin, aes(x = year, y = depth, color = species)) +
+   geom_point() +
+  geom_smooth(method = "glm", se = FALSE) + 
+  labs(title = "Depth vs. Year",
+       x = "Year",
+       y = "Depth (m)",
+       color = "Species Type") +
+  scale_color_manual(values = c("#74E291", "#59B4C3", "#211C6A")) +
+  theme_minimal() +
+  theme(legend.title = element_text(face = "bold", size = 12))
+
+#Depth vs Year - crab and squid
+
+ggplot(full_dung_squid, aes(x = year, y = depth, color = species)) +
+  geom_jitter(width = 0.2, height = 0, alpha = 0.5, size = 1) +  # Add jitter for better visibility
+  geom_smooth(method = "loess", se = FALSE, color = "black") +  # Add non-linear smoother
+  labs(title = "Depth vs. Year",
+       x = "Year",
+       y = "Depth (m)",
+       color = "Species Type") +
+  scale_color_manual(values = c("#59B4C3", "#E193BC")) +
+  theme_minimal() +
+  theme(legend.title = element_text(face = "bold", size = 12))
+
+#CRAB ONLY
+crab_dismap <- full_dung_squid %>%
+  filter(species == "dungeness")
+
+ggplot(crab_dismap, aes(x = year, y = depth, color = species)) +
+  geom_point()+
+  geom_jitter(width = 0.2, height = 0, alpha = 0.5, size = 1) +
+  labs(title = "Depth vs. Year",
+       x = "Year",
+       y = "Depth (m)",
+       color = "Species Type") +
+  scale_color_manual(values = c("#59B4C3")) +
+  theme_minimal() 
+
+#SQUID ONLY
+squid_dismap <- full_dung_squid %>%
+  filter(species == "squid")
+
+ggplot(squid_dismap, aes(x = year, y = depth, color = species)) +
+  geom_point()+
+  geom_jitter(width = 0.2, height = 0, alpha = 0.5, size = 1) +
+  labs(title = "Depth vs. Year",
+       x = "Year",
+       y = "Depth (m)",
+       color = "Species Type") +
+  scale_color_manual(values = c("#211C6A")) +
+  theme_minimal() 
+
+#CHINOOK
+chinook_dismap <- full_dung_squid_chin %>%
+  filter(species == "chinook")
+
+ggplot(squid_dismap, aes(x = year, y = depth, color = species)) +
+  geom_point()+
+  geom_jitter(width = 0.2, height = 0, alpha = 0.5, size = 1) +
+  labs(title = "Depth vs. Year",
+       x = "Year",
+       y = "Depth (m)",
+       color = "Species Type") +
+  scale_color_manual(values = c("#74E291")) +
+  theme_minimal() 
+
+
+
+############### DEPTH VS CPUE
+
+#Depth vs CPUE
+ggplot(full_dung_squid_chin, aes(x = wtcpue, y = depth, color = species)) +
+   geom_violin() +
+  labs(title = "CPUE vs. Year",
+       x = "CPUE",
+       y = "Depth (m)",
+       color = "Species Type") +
+  scale_color_manual(values = c("#74E291", "#59B4C3", "#211C6A")) +
+  theme_minimal() +
+  theme(legend.title = element_text(face = "bold", size = 12))
+
+#Depth vs CPUE - just crab and squid
+ggplot(full_dung_squid, aes(x = wtcpue, y = depth, fill = species)) +
+   geom_violin() +
+  labs(title = "CPUE vs. Year",
+       x = "CPUE",
+       y = "Depth (m)",
+       fill = "Species Type") +
+  scale_fill_manual(values = c("#59B4C3", "#211C6A")) +
+  theme_minimal() +
+  theme(legend.title = element_text(face = "bold", size = 12))
+
+```
+
+## CPUE Related Plots
+
+```{r}
+#full_dung_dquid_chin dataset
+
+ggplot(full_dung_squid_chin, aes(x = year, y = wtcpue, color = species)) +
+  geom_point() +
+  geom_smooth(method = "glm", se = FALSE) + 
+  labs(title = "CPUE vs. Species",
+       x = "Year",
+       y = "Weighted Catch Per Unit Effort (CPUE)",
+       color = "Species Type") +
+  scale_color_manual(values = c("#74E291", "#59B4C3", "#211C6A")) +
+  theme_minimal() +
+  theme(legend.title = element_text(face = "bold", size = 12))
+
+#Count chart
+ggplot(full_dung_squid_chin, aes(x = year, y = wtcpue, color = species)) +
+  geom_count(show.legend = FALSE) +
+  labs(title = "CPUE vs. Species",
+       x = "Year",
+       y = "Weighted Catch Per Unit Effort (CPUE)",
+       color = "Species Type")+
+  scale_color_manual(values = c("#74E291", "#59B4C3", "#211C6A"))+
+   theme_minimal()
+
+#Bubble chart   ###### could add with other dataset to look at landings
+ggplot(full_dung_squid_chin, aes(x = year, y = wtcpue, color = species, size = depth)) +
+  geom_point(alpha = 0.7)+
+  scale_size(range = c(.1, 10), name="Depth (m)")
+
+
+#Has a lot of outliers for Dunges may need to remove - no model of best fit is working
+
+```
+
+## Temperature Related Plots (do not have yet)
+
+```{r}
+
+```
