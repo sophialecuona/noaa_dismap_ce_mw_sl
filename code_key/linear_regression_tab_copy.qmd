@@ -97,6 +97,7 @@ dung_plot<-ggplot(dung_rev, aes(x= year, y= value_usd))+
 
 dung_plot
 ```
+
 ```{r}
 urchin_rev <- eis %>% 
   filter(comm_name == "Red sea urchin")
@@ -110,6 +111,7 @@ broom::tidy(urchin_output) %>%
   knitr::kable() %>% 
   kableExtra::kable_classic_2()
 ```
+
 ```{r}
 urchin_plot<-ggplot(urchin_rev, aes(x= year, y= value_usd))+
   geom_point()+
@@ -136,9 +138,3 @@ grid <- griddap(file_id,
                 longitude = c(-115, 130))$data
   
 ```
-
-
-
-
-
-
