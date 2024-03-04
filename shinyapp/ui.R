@@ -22,7 +22,7 @@ ui <- fluidPage(
     ),
 
     mainPanel(
-      plotOutput("species_plot")
+      plotOutput("distribution_plot")
     )
   )
 )

@@ -19,7 +19,7 @@ server <- function(input, output, session) {
       filter(year == input$year)
   })
 
-  output$species_plot <- renderPlot({
+  output$distribution_plot <- renderPlot({
     ggplot() +
       geom_sf(data = ca_counties_sf,
               color = "darkgrey",

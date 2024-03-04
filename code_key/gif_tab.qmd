@@ -149,29 +149,32 @@ sf_dsc <- st_as_sf(full_dung_squid_urch1, coords = c("long", "lat"), crs = 4326)
 dsc <- st_transform(sf_dsc, st_crs(ca_counties_raw_sf))
 
 save(dsc, file = "dsc.RData")
-# Save the object in a specific directory
+
 save(dsc, file = "noaa_dismap_ce_mw_sl2/shinyapp/dsc.RData")
+```
 
-plot(dsc)
+## Don't need it anymore:
 
-output = st_intersection(dsc, ca_counties_sf)
-plot(output)
-
-map <- ggplot() +
-  geom_sf(data = ca_counties_sf, 
-          color = "darkorchid", 
-          fill = "darkorchid4", 
-          size = 1) +
-  geom_sf(data = dsc, 
-          color = "orange", 
-          alpha = 0.7, 
-          size = 2) +
-  theme_void()
-map
-
-#clipping map
-map_clip <- map + coord_sf(ylim=c(32, 42))
-map_clip #having issues
+```{r}
+# 
+# output = st_intersection(dsc, ca_counties_sf)
+# plot(output)
+# 
+# map <- ggplot() +
+#   geom_sf(data = ca_counties_sf, 
+#           color = "darkorchid", 
+#           fill = "darkorchid4", 
+#           size = 1) +
+#   geom_sf(data = dsc, 
+#           color = "orange", 
+#           alpha = 0.7, 
+#           size = 2) +
+#   theme_void()
+# map
+# 
+# #clipping map
+# map_clip <- map + coord_sf(ylim=c(32, 42))
+# map_clip #having issues
 ```
 
 # Cool hotspot map? (DIDNT WORK)
