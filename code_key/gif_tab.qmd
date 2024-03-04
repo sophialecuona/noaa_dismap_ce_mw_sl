@@ -18,6 +18,8 @@ library(ggplot2)
 # Spatial data packages
 library(sf)
 library(tmap)
+library(spatstat)
+library(terra) 
 ```
 
 ```{r}
@@ -135,6 +137,8 @@ full_dung_squid_chin <- full_join(
   filter(!wtcpue == 0)
 ```
 
+# Wrangling survey and ca shapefile
+
 ```{r}
 sf_dsc <- st_as_sf(full_dung_squid_chin, coords = c("long", "lat"), crs = 4326)
 
@@ -149,13 +153,98 @@ ggplot() +
   geom_sf(data = ca_counties_sf) +
   geom_sf(data = output, size = 1, color = output$species)
 
+map <- ggplot() +
+  geom_sf(data = ca_counties_sf, 
+          color = "darkorchid", 
+          fill = "darkorchid4", 
+          size = 1) +
+  geom_sf(data = dsc, 
+          color = "orange", 
+          alpha = 0.7, 
+          size = 2) +
+  theme_void()
+map
+
+#clipping map
+map_clip <- map + coord_sf(ylim=c(32, 42))
+map_clip #having issues
+```
+
+# Cool hotspot map? (DIDNT WORK)
+
+```{r}
+#hotspot map
+
+### Convert vole observations to spatial point pattern
+dsc_ppp <- as.ppp(dsc) 
+
+# transform the projection to match:
+
+ca_sf <- st_transform(ca_counties_sf, st_crs(dsc))
+
+### Convert county boundary to observation window
+ca_win <- as.owin(ca_sf) 
+
+### Combine as a point pattern object (points + window):
+dsc_full <- ppp(dsc_ppp$x, dsc_ppp$y, window = ca_win)
+
+plot(dsc_full) 
+### Illegal point (outside window) shows up as the plus sign
+
+# DENSITY!
+dsc_density <- density(dsc_full, sigma = 5000) ### try different sigmas
+
+plot(dsc_density)
+```
+
+### failed way to clip dsc
+
+```{r}
+## clipping but leaving ocean
+
+lat_min <- 32  # Minimum latitude
+lat_max <- 42  # Maximum latitude
+
+# Create a polygon representing the latitude range
+lat_polygon <- st_polygon(list(rbind(c(-180, lat_min), c(-180, lat_max), c(180, lat_max), c(180, lat_min), c(-180, lat_min))))
+
+# Convert the polygon to an sf object with the same CRS as ca_counties_sf
+lat_polygon_sf <- st_sf(geometry = st_sfc(lat_polygon), crs = st_crs(ca_counties_sf))
+
+# Clip
+clipped_sf <- st_intersection(dsc, lat_polygon_sf)
+
+plot(clipped_sf)
+
 ggplot() +
-  geom_sf(data = ca_counties_raw_sf, fill = "lightgray") +
-  geom_point(data = output, aes(x = long, y = lat, color = species), size = 3) +
-  scale_color_manual(values = c("blue", "green", "red"), 
-                     breaks = c("species1", "species2", "species3"),
-                     labels = c("Species 1", "Species 2", "Species 3")) +
-  labs(title = "Points by Species") +
-  theme_minimal()
+  geom_sf(data = ca_counties_sf, 
+          color = "darkorchid", 
+          fill = "darkorchid4", 
+          size = 1) +
+  geom_sf(data = clipped_sf, 
+          color = "orange", 
+          alpha = 0.7, 
+          size = 2) +
+  theme_void()
+# not working
+```
+
+
+# Plotting catch data by year for each species
+
+## Dungeness
+```{r}
+
+```
+
+## Chinook
+```{r}
+
+```
+
+
+## Squid
+```{r}
+
 ```
 
