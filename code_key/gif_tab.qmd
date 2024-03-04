@@ -234,17 +234,109 @@ ggplot() +
 
 ## Dungeness
 ```{r}
+dung1 <- dsc %>%
+  filter(species == "dungeness")
 
+#by year
+
+#2003
+dung2003 <- dung %>%
+  filter(year == "2003")
+
+dung_map_2003 <- ggplot() +
+  geom_sf(data = ca_counties_sf, 
+          color = "darkgrey", 
+          fill = "grey", 
+          size = 1) +
+  geom_sf(data = dung2003, 
+          aes(shape = "square"),
+          color = "orange", 
+          alpha = 0.7, 
+          size = 3) +
+  scale_shape_manual(values = 15) + 
+  theme_void()
+dung_map_2003
+
+# using loop and lapply: 
+# Filter the "dungeness" species
+dung <- output %>%
+  filter(species == "dungeness")
+
+# make a list of plots for each year
+year_plots <- lapply(2003:2022, function(year) {
+  dung_year <- dung %>%
+    filter(year == as.character(year))
+  
+  dung_map_year <- ggplot() +
+    geom_sf(data = ca_counties_sf, 
+            color = "darkgrey", 
+            fill = "grey", 
+            size = 1) +
+    geom_sf(data = dung_year, 
+            aes(shape = "square"),
+            color = "orange", 
+            alpha = 0.7, 
+            size = 3) +
+    scale_shape_manual(values = 15) + 
+    labs(title = paste("Dungeness Crab Distribution -", year)) +
+    theme_void()
+  
+  print(dung_map_year)
+})
+
+# save as PNG files
+lapply(1:length(year_plots), function(i) {
+  ggsave(filename = paste0("dung_map_", 2003 + i - 1, ".png"), plot = year_plots[[i]], width = 10, height = 8)
+})
 ```
 
 ## Chinook
 ```{r}
+chin <- output %>%
+  filter(species == "chinook")
 
+#by year
+chin2003 <- chin %>%
+  filter(year == "2003")
+
+# using loop and lapply: 
+
+# Create a list of plots for each year
+chin_year_plots <- lapply(2003:2022, function(year) {
+  chin_year <- chin %>%
+    filter(year == as.character(year))
+  
+  chin_map_year <- ggplot() +
+    geom_sf(data = ca_counties_sf, 
+            color = "darkgrey", 
+            fill = "grey", 
+            size = 1) +
+    geom_sf(data = chin_year, 
+            aes(shape = "square"),
+            color = "salmon", 
+            alpha = 0.7, 
+            size = 3) +
+    scale_shape_manual(values = 15) + 
+    labs(title = paste("Chinook Salmon Distribution -", year)) +
+    theme_void()
+  
+  print(chin_map_year)
+})
+
+# save as PNG files
+lapply(1:length(year_plots), function(i) {
+  ggsave(filename = paste0("chin_map_", 2003 + i - 1, ".png"), plot = chin_year_plots[[i]], width = 10, height = 8)
+})
 ```
 
 
 ## Squid
 ```{r}
+squid <- output %>%
+  filter(species == "squid")
 
+#by year
+squid2003 <- squid %>%
+  filter(year == "2003")
 ```
 
