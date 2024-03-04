@@ -9,6 +9,15 @@ library(here)
 library(tidyverse)
 library(janitor)
 library(dplyr)
+
+devtools::install_github("cfree14/wcfish", force=T)
+library(wcfish)
+
+all <- pacfin_all1
+
+eis <- all %>%
+  select(year, comm_name, value_usd, landings_mt, landings_kg, landings_lb, price_usd_lb) %>%
+  filter(comm_name %in% c("Chinook salmon", "Dungeness crab", "Market squid"))
 ```
 
 ```{r}
@@ -88,3 +97,48 @@ dung_plot<-ggplot(dung_rev, aes(x= year, y= value_usd))+
 
 dung_plot
 ```
+```{r}
+urchin_rev <- eis %>% 
+  filter(comm_name == "Red sea urchin")
+
+  
+urchin_output<-lm(value_usd ~ year, data=urchin_rev) #linear model (lm) 
+urchin_output # gets only the coefficients
+summary(urchin_output)  
+
+broom::tidy(urchin_output) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_classic_2()
+```
+```{r}
+urchin_plot<-ggplot(urchin_rev, aes(x= year, y= value_usd))+
+  geom_point()+
+  labs(x=" ", y="Revenue in Millions (USD)")+
+  geom_abline(intercept = coef(urchin_output)[1], 
+              slope = coef(urchin_output)[2])+
+  theme_bw()+
+  scale_y_continuous(labels = scales::label_number(scale = 1e-6))
+
+urchin_plot
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2003-01-01"
+
+end = "2003-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 49.2),
+                longitude = c(-115, 130))$data
+  
+```
+
+
+
+
+
+
