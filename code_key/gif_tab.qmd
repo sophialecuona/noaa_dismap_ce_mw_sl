@@ -74,9 +74,9 @@ ca_counties_sf <- ca_counties_raw_sf %>%
 ```
 
 ```{r}
-dung_survey <- read_csv(here("data/dungeness_survey_data.csv")) 
+dung_survey1 <- read_csv(here("data/dungeness_survey_data.csv")) 
 
-dung_clean <- dung_survey %>%
+dung_clean1 <- dung_survey1 %>%
   clean_names() %>%
   mutate(haul_id = dataset_west_coast_annual,
          stratum = x2,
@@ -89,9 +89,9 @@ dung_clean <- dung_survey %>%
   select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
   drop_na()
 
-squid_survey <- read_csv(here("data/squid_survey_data.csv")) 
+squid_survey1 <- read_csv(here("data/squid_survey_data.csv")) 
 
-squid_clean <- squid_survey %>%
+squid_clean1 <- squid_survey1 %>%
   clean_names() %>%
   mutate(haul_id = dataset_west_coast_annual,
          stratum = x2,
@@ -104,7 +104,7 @@ squid_clean <- squid_survey %>%
   select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
   drop_na()
 
-full_dung_squid <- full_join(
+full_dung_squid1 <- full_join(
   dung_clean,
   squid_clean,
   by = NULL,
@@ -112,9 +112,9 @@ full_dung_squid <- full_join(
   keep = FALSE
 )
 
-chinook_survey <- read_csv(here("data/chinook_salmon_survey.csv")) 
+chinook_survey1 <- read_csv(here("data/chinook_salmon_survey.csv")) 
 
-chinook_clean <- chinook_survey %>%
+chinook_clean1 <- chinook_survey1 %>%
   clean_names() %>%
   mutate(haul_id = dataset_west_coast_triennial,
          stratum = x2,
@@ -127,9 +127,9 @@ chinook_clean <- chinook_survey %>%
   select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
   drop_na()
 
-full_dung_squid_chin <- full_join(
-  full_dung_squid,
-  chinook_clean,
+full_dung_squid_chin1 <- full_join(
+  full_dung_squid1,
+  chinook_clean1,
   by = NULL,
   suffix = c(".x", ".y"),
   keep = FALSE
@@ -140,7 +140,7 @@ full_dung_squid_chin <- full_join(
 # Wrangling survey and ca shapefile
 
 ```{r}
-sf_dsc <- st_as_sf(full_dung_squid_chin, coords = c("long", "lat"), crs = 4326)
+sf_dsc <- st_as_sf(full_dung_squid_chin1, coords = c("long", "lat"), crs = 4326)
 
 dsc <- st_transform(sf_dsc, st_crs(ca_counties_raw_sf))
 
@@ -148,10 +148,6 @@ plot(dsc)
 
 output = st_intersection(dsc, ca_counties_sf)
 plot(output)
-
-ggplot() +
-  geom_sf(data = ca_counties_sf) +
-  geom_sf(data = output, size = 1, color = output$species)
 
 map <- ggplot() +
   geom_sf(data = ca_counties_sf, 
@@ -239,23 +235,23 @@ dung1 <- dsc %>%
 
 #by year
 
-#2003
-dung2003 <- dung %>%
-  filter(year == "2003")
+#2004
+dung2004 <- dung %>%
+  filter(year == "2004")
 
-dung_map_2003 <- ggplot() +
+dung_map_2004 <- ggplot() +
   geom_sf(data = ca_counties_sf, 
           color = "darkgrey", 
           fill = "grey", 
           size = 1) +
-  geom_sf(data = dung2003, 
+  geom_sf(data = dung2004, 
           aes(shape = "square"),
           color = "orange", 
           alpha = 0.7, 
           size = 3) +
   scale_shape_manual(values = 15) + 
   theme_void()
-dung_map_2003
+dung_map_2004
 
 # using loop and lapply: 
 # Filter the "dungeness" species
@@ -263,9 +259,9 @@ dung <- output %>%
   filter(species == "dungeness")
 
 # make a list of plots for each year
-year_plots <- lapply(2003:2022, function(year) {
+year_plots <- lapply(2003:2022, function(years) {
   dung_year <- dung %>%
-    filter(year == as.character(year))
+    filter(years == as.character(year))
   
   dung_map_year <- ggplot() +
     geom_sf(data = ca_counties_sf, 
@@ -278,7 +274,7 @@ year_plots <- lapply(2003:2022, function(year) {
             alpha = 0.7, 
             size = 3) +
     scale_shape_manual(values = 15) + 
-    labs(title = paste("Dungeness Crab Distribution -", year)) +
+    labs(title = paste("Dungeness Crab Distribution -", years)) +
     theme_void()
   
   print(dung_map_year)
@@ -291,20 +287,37 @@ lapply(1:length(year_plots), function(i) {
 ```
 
 ## Chinook
+
+### ISSUE because it is not on the coast ever lol. need to figure how to clip
+### ALSO it has diff year range than dung and squid
 ```{r}
-chin <- output %>%
+chin <- dsc %>%
   filter(species == "chinook")
 
-#by year
-chin2003 <- chin %>%
-  filter(year == "2003")
+#by year (1997 - 2004)
+chin2001 <- chin %>%
+  filter(year == "2001")
+
+chin_map_2001 <- ggplot() +
+  geom_sf(data = ca_counties_sf, 
+          color = "darkgrey", 
+          fill = "grey", 
+          size = 1) +
+  geom_sf(data = chin2001, 
+          aes(shape = "square"),
+          color = "salmon", 
+          alpha = 0.7, 
+          size = 3) +
+  scale_shape_manual(values = 15) + 
+  theme_void()
+chin_map_2001
 
 # using loop and lapply: 
 
 # Create a list of plots for each year
-chin_year_plots <- lapply(2003:2022, function(year) {
+chin_year_plots <- lapply(1997:2004, function(years) {
   chin_year <- chin %>%
-    filter(year == as.character(year))
+    filter(years == as.character(year))
   
   chin_map_year <- ggplot() +
     geom_sf(data = ca_counties_sf, 
@@ -317,7 +330,7 @@ chin_year_plots <- lapply(2003:2022, function(year) {
             alpha = 0.7, 
             size = 3) +
     scale_shape_manual(values = 15) + 
-    labs(title = paste("Chinook Salmon Distribution -", year)) +
+    labs(title = paste("Chinook Salmon Distribution -", years)) +
     theme_void()
   
   print(chin_map_year)
