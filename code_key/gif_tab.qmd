@@ -251,10 +251,10 @@ ggplot() +
 # not working
 ```
 
-
 # Plotting catch data by year for each species
 
 ## Dungeness
+
 ```{r}
 dung1 <- dsc %>%
   filter(species == "dungeness")
@@ -315,7 +315,9 @@ lapply(1:length(year_plots), function(i) {
 ## Chinook
 
 ### ISSUE because it is not on the coast ever lol. need to figure how to clip
+
 ### ALSO it has diff year range than dung and squid
+
 ```{r}
 chin <- dsc %>%
   filter(species == "chinook")
@@ -368,8 +370,8 @@ lapply(1:length(year_plots), function(i) {
 })
 ```
 
-
 ## Squid
+
 ```{r}
 squid <- dsc %>%
   filter(species == "squid")
@@ -405,6 +407,7 @@ lapply(1:length(squid_year_plots), function(i) {
   ggsave(filename = paste0("squid_map_", 2003 + i - 1, ".png"), plot = squid_year_plots[[i]], width = 10, height = 8)
 })
 ```
+
 ## Urchin
 
 ```{r}
@@ -442,4 +445,3 @@ lapply(1:length(urchin_year_plots), function(i) {
   ggsave(filename = paste0("urchin_map_", 2003 + i - 1, ".png"), plot = urchin_year_plots[[i]], width = 10, height = 8)
 })
 ```
-
