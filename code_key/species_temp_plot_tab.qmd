@@ -15,7 +15,7 @@ library(cowplot)
 library(dplyr)
 ```
 
-## Input Data 
+## Input Data
 
 Take from Data Wrangling Tab
 
