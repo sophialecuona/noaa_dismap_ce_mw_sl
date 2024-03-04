@@ -5,7 +5,6 @@ library(dplyr)
 library(here)
 library(tidyverse)
 
-# Load data
 load(here("shinyapp", "dsc.RData"))
 
 ui <- fluidPage(
