@@ -86,6 +86,7 @@ dung_clean1 <- dung_survey1 %>%
          year = x6,
          wtcpue = x7) %>%
   mutate(species = "dungeness") %>%
+  filter(lat < 42) %>%
   select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
   drop_na()
 
@@ -101,6 +102,7 @@ squid_clean1 <- squid_survey1 %>%
          year = x6,
          wtcpue = x7) %>%
   mutate(species = "squid") %>%
+  filter(lat < 42) %>%
   select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
   drop_na()
 
@@ -150,6 +152,7 @@ urchin_clean1 <- urchin_survey1 %>%
          year = x6,
          wtcpue = x7) %>%
   mutate(species = "urchin") %>%
+  filter(lat < 42) %>%
   select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
   drop_na()
 
@@ -160,7 +163,8 @@ full_dung_squid_urch1 <- full_join(
   suffix = c(".x", ".y"),
   keep = FALSE
 ) %>%
-  filter(!wtcpue == 0)
+  filter(!wtcpue == 0)%>%
+  filter(lat < 42)
 ```
 
 # Wrangling survey and ca shapefile
@@ -281,7 +285,7 @@ dung_map_2004
 
 # using loop and lapply: 
 # Filter the "dungeness" species
-dung <- output %>%
+dung <- dsc %>%
   filter(species == "dungeness")
 
 # make a list of plots for each year
@@ -406,6 +410,7 @@ squid_year_plots <- lapply(2003:2022, function(years) {
 lapply(1:length(squid_year_plots), function(i) {
   ggsave(filename = paste0("squid_map_", 2003 + i - 1, ".png"), plot = squid_year_plots[[i]], width = 10, height = 8)
 })
+
 ```
 
 ## Urchin
