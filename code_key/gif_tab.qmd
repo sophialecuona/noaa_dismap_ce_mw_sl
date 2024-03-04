@@ -4,23 +4,372 @@ format: html
 editor: visual
 ---
 
-## Quarto
+Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 12. Available online at https://www.marineregions.org/. https://doi.org/10.14284/632
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+# Read in EEZ
 
 ```{r}
-1 + 1
-```
+library(tidyverse)
+library(here)
+library(broom)
+library(janitor)
+library(ggplot2)
 
-You can add options to executable code like this
+# Spatial data packages
+library(sf)
+library(tmap)
+library(spatstat)
+library(terra) 
+```
 
 ```{r}
-#| echo: false
-2 * 2
+ca_counties_raw_sf <- read_sf(here("data", "ca_counties2", "CA_Counties_TIGER2016.shp"))
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+```{r}
+# eez_raw_sf <- read_sf(here("data", "World_EEZ_v12_20231025", "eez_boundaries_v12.shp"))
+# 
+# eez2_raw_sf <- read_sf(here("data", "World_EEZ_v12_20231025", "eez_v12.shp"))
+```
+
+```{r}
+# eez_raw_sf %>% st_crs()
+# eez_raw_sf %>% terra::crs() #WGS84
+# 
+# eez2_raw_sf %>% st_crs()
+# eez2_raw_sf %>% terra::crs()#WGS84
+
+ca_counties_raw_sf %>% st_crs()
+ca_counties_raw_sf %>% terra::crs()
+# 
+# eez2_proj_sf <- st_transform(eez2_raw_sf, st_crs(ca_counties_raw_sf))
+```
+
+```{r}
+# plot(eez_raw_sf)
+# plot(eez2_raw_sf)
+```
+
+# Clipping to CA Counties
+
+```{r}
+# output = st_intersection(eez2_proj_sf, ca_counties_raw_sf)
+# plot(output)
+```
+
+```{r}
+# # Set http.postBuffer size to 524288000 bytes (500MB)
+# buffer_size_bytes <- 524288000
+# 
+# # Execute git config command from R
+# command <- paste("git config http.postBuffer", buffer_size_bytes)
+# system(command)
+```
+
+```{r}
+ca_counties_sf <- ca_counties_raw_sf %>% 
+  janitor::clean_names() %>%
+  mutate(land_km2 = aland / 1e6) %>%
+  select(county = name, land_km2)
+```
+
+```{r}
+dung_survey1 <- read_csv(here("data/dungeness_survey_data.csv")) 
+
+dung_clean1 <- dung_survey1 %>%
+  clean_names() %>%
+  mutate(haul_id = dataset_west_coast_annual,
+         stratum = x2,
+         lat = x3,
+         long = x4,
+         depth = x5,
+         year = x6,
+         wtcpue = x7) %>%
+  mutate(species = "dungeness") %>%
+  filter(lat < 42) %>%
+  select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
+  drop_na()
+
+squid_survey1 <- read_csv(here("data/squid_survey_data.csv")) 
+
+squid_clean1 <- squid_survey1 %>%
+  clean_names() %>%
+  mutate(haul_id = dataset_west_coast_annual,
+         stratum = x2,
+         lat = x3,
+         long = x4,
+         depth = x5,
+         year = x6,
+         wtcpue = x7) %>%
+  mutate(species = "squid") %>%
+  filter(lat < 42) %>%
+  select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
+  drop_na()
+
+full_dung_squid1 <- full_join(
+  dung_clean1,
+  squid_clean1,
+  by = NULL,
+  suffix = c(".x", ".y"),
+  keep = FALSE
+)
+
+urchin_survey1 <- read_csv(here("data/northern_heart_urchin_survey.csv")) 
+
+urchin_clean1 <- urchin_survey1 %>%
+  clean_names() %>%
+  mutate(haul_id = dataset_west_coast_annual,
+         stratum = x2,
+         lat = x3,
+         long = x4,
+         depth = x5,
+         year = x6,
+         wtcpue = x7) %>%
+  mutate(species = "urchin") %>%
+  filter(lat < 42) %>%
+  select(species, haul_id, stratum, lat, long, depth, year, wtcpue) %>%
+  drop_na()
+
+full_dung_squid_urch1 <- full_join(
+  full_dung_squid1,
+  urchin_clean1,
+  by = NULL,
+  suffix = c(".x", ".y"),
+  keep = FALSE
+) %>%
+  filter(!wtcpue == 0)%>%
+  filter(lat < 42)
+```
+
+# Wrangling survey and ca shapefile
+
+```{r}
+sf_dsc <- st_as_sf(full_dung_squid_urch1, coords = c("long", "lat"), crs = 4326)
+
+dsc <- st_transform(sf_dsc, st_crs(ca_counties_raw_sf))
+
+save(dsc, file = "dsc.RData")
+
+save(dsc, file = "noaa_dismap_ce_mw_sl2/shinyapp/dsc.RData")
+```
+
+## Don't need it anymore:
+
+```{r}
+# 
+# output = st_intersection(dsc, ca_counties_sf)
+# plot(output)
+# 
+# map <- ggplot() +
+#   geom_sf(data = ca_counties_sf, 
+#           color = "darkorchid", 
+#           fill = "darkorchid4", 
+#           size = 1) +
+#   geom_sf(data = dsc, 
+#           color = "orange", 
+#           alpha = 0.7, 
+#           size = 2) +
+#   theme_void()
+# map
+# 
+# #clipping map
+# map_clip <- map + coord_sf(ylim=c(32, 42))
+# map_clip #having issues
+```
+
+# Cool hotspot map? (DIDNT WORK)
+
+```{r}
+#hotspot map
+
+### Convert vole observations to spatial point pattern
+dsc_ppp <- as.ppp(dsc) 
+
+# transform the projection to match:
+
+ca_sf <- st_transform(ca_counties_sf, st_crs(dsc))
+
+### Convert county boundary to observation window
+ca_win <- as.owin(ca_sf) 
+
+### Combine as a point pattern object (points + window):
+dsc_full <- ppp(dsc_ppp$x, dsc_ppp$y, window = ca_win)
+
+plot(dsc_full) 
+### Illegal point (outside window) shows up as the plus sign
+
+# DENSITY!
+dsc_density <- density(dsc_full, sigma = 5000) ### try different sigmas
+
+plot(dsc_density)
+```
+
+### failed way to clip dsc
+
+```{r}
+## clipping but leaving ocean
+
+lat_min <- 32  # Minimum latitude
+lat_max <- 42  # Maximum latitude
+
+# Create a polygon representing the latitude range
+lat_polygon <- st_polygon(list(rbind(c(-180, lat_min), c(-180, lat_max), c(180, lat_max), c(180, lat_min), c(-180, lat_min))))
+
+# Convert the polygon to an sf object with the same CRS as ca_counties_sf
+lat_polygon_sf <- st_sf(geometry = st_sfc(lat_polygon), crs = st_crs(ca_counties_sf))
+
+# Clip
+clipped_sf <- st_intersection(dsc, lat_polygon_sf)
+
+plot(clipped_sf)
+
+ggplot() +
+  geom_sf(data = ca_counties_sf, 
+          color = "darkorchid", 
+          fill = "darkorchid4", 
+          size = 1) +
+  geom_sf(data = clipped_sf, 
+          color = "orange", 
+          alpha = 0.7, 
+          size = 2) +
+  theme_void()
+# not working
+```
+
+# Plotting catch data by year for each species
+
+## Dungeness
+
+```{r}
+dung1 <- dsc %>%
+  filter(species == "dungeness")
+
+#by year
+
+#2004
+dung2004 <- dung %>%
+  filter(year == "2004")
+
+dung_map_2004 <- ggplot() +
+  geom_sf(data = ca_counties_sf, 
+          color = "darkgrey", 
+          fill = "grey", 
+          size = 1) +
+  geom_sf(data = dung2004, 
+          aes(shape = "square"),
+          color = "orange", 
+          alpha = 0.7, 
+          size = 3) +
+  scale_shape_manual(values = 15) + 
+  theme_void()
+dung_map_2004
+
+# using loop and lapply: 
+# Filter the "dungeness" species
+dung <- dsc %>%
+  filter(species == "dungeness")
+
+# make a list of plots for each year
+year_plots <- lapply(2003:2022, function(years) {
+  dung_year <- dung %>%
+    filter(years == as.character(year))
+  
+  dung_map_year <- ggplot() +
+    geom_sf(data = ca_counties_sf, 
+            color = "darkgrey", 
+            fill = "grey", 
+            size = 1) +
+    geom_sf(data = dung_year, 
+            aes(shape = "square"),
+            color = "orange", 
+            alpha = 0.7, 
+            size = 3) +
+    scale_shape_manual(values = 15) + 
+    labs(title = paste("Dungeness Crab Distribution -", years)) +
+    theme_void()
+  
+  print(dung_map_year)
+})
+
+# save as PNG files
+lapply(1:length(year_plots), function(i) {
+  ggsave(filename = paste0("dung_map_", 2003 + i - 1, ".png"), plot = year_plots[[i]], width = 10, height = 8)
+})
+```
+
+## Squid
+
+```{r}
+squid <- dsc %>%
+  filter(species == "squid")
+
+#by year
+squid2003 <- squid %>%
+  filter(year == "2003")
+
+# make a list of plots for each year
+squid_year_plots <- lapply(2003:2022, function(years) {
+  squid_year <- squid %>%
+    filter(years == as.character(year))
+  
+  squid_map_year <- ggplot() +
+    geom_sf(data = ca_counties_sf, 
+            color = "darkgrey", 
+            fill = "grey", 
+            size = 1) +
+    geom_sf(data = squid_year, 
+            aes(shape = "square"),
+            color = "bisque4", 
+            alpha = 0.7, 
+            size = 3) +
+    scale_shape_manual(values = 15) + 
+    labs(title = paste("Market Squid Distribution -", years)) +
+    theme_void()
+  
+  print(squid_map_year)
+})
+
+# save as PNG files
+lapply(1:length(squid_year_plots), function(i) {
+  ggsave(filename = paste0("squid_map_", 2003 + i - 1, ".png"), plot = squid_year_plots[[i]], width = 10, height = 8)
+})
+
+```
+
+## Urchin
+
+```{r}
+urchin <- dsc %>%
+  filter(species == "urchin")
+
+#by year
+urchin2003 <- urchin %>%
+  filter(year == "2003")
+
+# make a list of plots for each year
+urchin_year_plots <- lapply(2003:2022, function(years) {
+  urchin_year <- urchin %>%
+    filter(years == as.character(year))
+  
+  urchin_map_year <- ggplot() +
+    geom_sf(data = ca_counties_sf, 
+            color = "darkgrey", 
+            fill = "grey", 
+            size = 1) +
+    geom_sf(data = urchin_year, 
+            aes(shape = "square"),
+            color = "darkmagenta", 
+            alpha = 0.7, 
+            size = 3) +
+    scale_shape_manual(values = 15) + 
+    labs(title = paste("Northern Heart Urchin Distribution -", years)) +
+    theme_void()
+  
+  print(urchin_map_year)
+})
+
+# save as PNG files
+lapply(1:length(urchin_year_plots), function(i) {
+  ggsave(filename = paste0("urchin_map_", 2003 + i - 1, ".png"), plot = urchin_year_plots[[i]], width = 10, height = 8)
+})
+```

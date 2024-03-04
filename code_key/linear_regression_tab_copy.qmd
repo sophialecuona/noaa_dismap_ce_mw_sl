@@ -1,0 +1,144 @@
+---
+title: "Linear Regression Tab"
+format: html
+editor: visual
+---
+
+```{r}
+library(here)
+library(tidyverse)
+library(janitor)
+library(dplyr)
+
+devtools::install_github("cfree14/wcfish", force=T)
+library(wcfish)
+
+all <- pacfin_all1
+
+eis <- all %>%
+  select(year, comm_name, value_usd, landings_mt, landings_kg, landings_lb, price_usd_lb) %>%
+  filter(comm_name %in% c("Chinook salmon", "Dungeness crab", "Market squid"))
+```
+
+```{r}
+squid_rev <- eis %>% 
+  filter(comm_name == "Market squid")
+
+  
+squid_output<-lm(value_usd ~ year, data=squid_rev) #linear model (lm) 
+squid_output # gets only the coefficients
+summary(squid_output)  
+
+broom::tidy(squid_output) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_classic_2()
+```
+
+```{r}
+squid_plot<-ggplot(squid_rev, aes(x= year, y= value_usd))+
+  geom_point()+
+  labs(x=" ", y="Revenue in Millions (USD)")+
+  geom_abline(intercept = coef(squid_output)[1], 
+              slope = coef(squid_output)[2])+
+  theme_bw()+
+  scale_y_continuous(labels = scales::label_number(scale = 1e-6))
+
+
+
+squid_plot
+```
+
+```{r}
+chinook_rev <- eis %>% 
+  filter(comm_name == "Chinook salmon")
+
+chinook_output<-lm(value_usd ~ year, data=chinook_rev) #linear model (lm) 
+chinook_output # gets only the coefficients
+summary(chinook_output)
+
+broom::tidy(chinook_output) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_classic_2()
+```
+
+```{r}
+chinook_plot<-ggplot(chinook_rev, aes(x= year, y= value_usd))+
+  geom_point()+
+  labs(x=" ", y="Revenue in Millions (USD)")+
+  geom_abline(intercept = coef(chinook_output)[1], 
+              slope = coef(chinook_output)[2])+
+  theme_bw()+
+  scale_y_continuous(labels = scales::label_number(scale = 1e-6))
+
+chinook_plot
+```
+
+```{r}
+dung_rev <- eis %>% 
+  filter(comm_name == "Dungeness crab")
+
+dung_output<-lm(value_usd ~ year, data=dung_rev) #linear model (lm) 
+dung_output # gets only the coefficients
+summary(dung_output)
+
+broom::tidy(dung_output) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_classic_2()
+```
+
+```{r}
+dung_plot<-ggplot(dung_rev, aes(x= year, y= value_usd))+
+  geom_point()+
+  labs(x=" ", y="Revenue in Millions (USD)")+
+  geom_abline(intercept = coef(dung_output)[1], 
+              slope = coef(dung_output)[2])+
+  theme_bw()+
+  scale_y_continuous(labels = scales::label_number(scale = 1e-6))
+
+dung_plot
+```
+```{r}
+urchin_rev <- eis %>% 
+  filter(comm_name == "Red sea urchin")
+
+  
+urchin_output<-lm(value_usd ~ year, data=urchin_rev) #linear model (lm) 
+urchin_output # gets only the coefficients
+summary(urchin_output)  
+
+broom::tidy(urchin_output) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_classic_2()
+```
+```{r}
+urchin_plot<-ggplot(urchin_rev, aes(x= year, y= value_usd))+
+  geom_point()+
+  labs(x=" ", y="Revenue in Millions (USD)")+
+  geom_abline(intercept = coef(urchin_output)[1], 
+              slope = coef(urchin_output)[2])+
+  theme_bw()+
+  scale_y_continuous(labels = scales::label_number(scale = 1e-6))
+
+urchin_plot
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2003-01-01"
+
+end = "2003-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 49.2),
+                longitude = c(-115, 130))$data
+  
+```
+
+
+
+
+
+

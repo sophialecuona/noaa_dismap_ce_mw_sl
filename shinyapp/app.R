@@ -1,111 +1,137 @@
 library(shiny)
-library(bslib)
 library(tidyverse)
+library(janitor)
+library(dplyr)
+library(wcfish)
+library(broom)
+library(ggplot2)
+library(scales)
+library(bslib)
 library(leaflet)
 
+# Load data
+all <- pacfin_all1
+eis <- all %>%
+  select(year, comm_name, value_usd, landings_mt, landings_kg, landings_lb, price_usd_lb)
+
+# Load data
+load(here("shinyapp", "dsc.RData"))
+
+# Define UI
 ui <- fluidPage(
   theme = bs_theme(bootswatch = 'solar'),
-
-
-  titlePanel ('California Economically Important Species Through Space and Time'),
+  titlePanel("California Economically Important Species Through Space and Time"),
   tabsetPanel(
-
     tabPanel(
-      title = 'Habitat Range',
-      p("Tab 1: Species Range",
-    br(),
-    "- Species",
-    br(),
-    "- Convert lat/long into shapefile",
-    br(),
-    "- Year - indexed by colors",
-    br(),
-    "- Picture of species",
-    br(),
-    "- Widgets:Map, Slider, Animated???? lol",
-    br(),
-    "- Need to get historic data (90’s year)",
-    br(),
-    "What questions do we want to ask/answer about our data?;",
-    br(),
-    "How are the most economically important stocks moving in CA?",
-    br(),
-    "How is the CPUE changing overtime for these stocks?",
-    br(),
-    "Could correlate with policy change or new technology?",
-    br(),
-    "Water temp and lat and long increasing over time?",
-    br(),
-    "Would have to find and pull in another data set.",
-    br(),
-    "Are the surveys missing any key areas??"
-  ),
-      # Embed an interactive map using an iframe
-      tags$iframe(src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3312.170979609962!2d-118.48477998481262!3d34.01945408061439!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2c75ddc27da13%3A0xe22fdf787b21f55e!2sCalifornia%2C%20USA!5e0!3m2!1sen!2sca!4v1647273999725!5m2!1sen!2sca",
-                  height = "600px", width = "800px", frameborder = "0")
-    ), ### end tab 1
-
-    tabPanel(
-      title = 'Distribution movement (years ____ - ____)',
-      p("Tab 2: Movement over the years.
-        DisMAP (mimic).
-        See how fish move with lat, long, and depth.
-        Show 1 or 2 graphs.
-        Widgets.
-        Sliders or dropdown.
-        Map.
-        Static map(s) (placeholder).
-      "),
-      sidebarPanel(
-        sliderInput("Date Range",
-                     "Select a value:",  # Slider label
-                     min = 2003,            # Minimum value
-                     max = 2022,          # Maximum value
-                     value = 2003)         # Initial value
-      ),
+      title = 'Species Revenue Analysis',
       sidebarLayout(
         sidebarPanel(
-          h3('Select Species'),
-          radioButtons(
-            inputId = 'spp_button',
-            label = 'Species',
-            choices = c( 'Squid', 'Dungeness Crab', 'Chinook Salmon')
-          )
+          selectInput("species", "Select Species:",
+                      choices = unique(eis$comm_name),
+                      selected = "Market squid"),
+          actionButton("update", "Update Analysis")
         ),
         mainPanel(
-          h2('Here is a main panel')
+          tabsetPanel(
+            tabPanel("Coefficients", tableOutput("coefficients_table")),
+            tabPanel("Plot", plotOutput("species_plot"))
+          )
         )
-      ) ### end sidebarLayout
-    ), ### end tab 2
+      )
+    ), ### end tab 1
 
-    tabPanel(
-      title = 'Distribution and Temperature',
-      p("Tab 3: CPUE and TEMP!
-        Need to get sea surface temp or CTD profile data.
-        Widgets: Map,
-        Sliders.
-      "),
+    tabPanel("California Marine Species Survey"),
+
+      sidebarLayout(
       sidebarPanel(
-        selectInput("species",           # Input ID
-                    "Select Species:",  # Input label
-                    choices = c('Species A', 'Species B', 'Species C'),  # Dropdown choices
-                    selected = "Species A")  # Initial selection
+        selectInput("species", "Select Species:",
+                    choices = c("Dungeness Crab", "Squid", "Urchin"),
+                    selected = "Dungeness Crab"),
+        selectInput("year", "Select Year:",
+                    choices = 2003:2022,
+                    selected = 2003)
       ),
-      # Additional widgets can be added here
+
+      mainPanel(
+        plotOutput("distribution_plot")
+      ) ### end sidebarLayout
     ), ### end tab 3
 
     tabPanel(
-      title = 'Data Citation'
-    ) ### end tab 4
+      title = 'Data Citation',
+      p("NOAA Fisheries. 2022. DisMAP data records. Retrieved from apps-st.fisheries.noaa.gov/dismap/DisMAP.html. Accessed 1/20/2024.",
+        br(),
+        br(),
+        "Free, C. (2024). wcfish: R Package for accessing fisheries data. GitHub. https://github.com/cfree14/wcfish. Accessed 2/29/2024."),
+    ) ### end tab 5
 
   ) ### end of tabsetpanel
-)
 
 
-server <- function(input, output) {
-  #### put sever functions here
+# Define server logic
+server <- function(input, output, session) {
+  filtered_data <- reactive({
+    eis %>%
+      filter(comm_name == input$species)
 
+  filtered_data <- reactive({
+    species_data <- switch(input$species,
+                             "Dungeness Crab" = dsc %>% filter(species == "dungeness"),
+                             "Squid" = dsc %>% filter(species == "squid"),
+                             "Urchin" = dsc %>% filter(species == "urchin"))
+
+      species_data %>%
+        filter(year == input$year)
+  })
+
+  output$coefficients_table <- renderTable({
+    # Perform linear regression
+    squid_output <- lm(value_usd ~ year, data = filtered_data())
+    # Get coefficients and tidy them
+    coefficients <- tidy(squid_output)
+    # Return coefficients as a table
+    coefficients
+  })
+
+  output$species_plot <- renderPlot({
+    # Perform linear regression
+    squid_output <- lm(value_usd ~ year, data = filtered_data())
+    # Create ggplot
+    ggplot(filtered_data(), aes(x = year, y = value_usd)) +
+      geom_point() +
+      labs(x = "Year", y = "Revenue in Millions (USD)") +
+      geom_abline(
+        intercept = coef(squid_output)[1],
+        slope = coef(squid_output)[2]
+      ) +
+      theme_bw() +
+      scale_y_continuous(labels = scales::label_number(scale = 1e-6))
+  })
+
+  observeEvent(input$update, {
+    updateTabsetPanel(session, "tabset", selected = "Plot")
+  })
+
+  output$distribution_plot <- renderPlot({
+    ggplot() +
+      geom_sf(data = ca_counties_sf,
+              color = "darkgrey",
+              fill = "grey",
+              size = 1) +
+      geom_sf(data = filtered_data(),
+              aes(shape = "square"),
+              color = switch(input$species,
+                             "Dungeness Crab" = "orange",
+                             "Squid" = "bisque4",
+                             "Urchin" = "darkmagenta"),
+              alpha = 0.7,
+              size = 3) +
+      scale_shape_manual(values = 15) +
+      labs(title = paste(input$species, "Distribution -", input$year)) +
+      theme_void()
+  })
 }
 
-### combine into app:
+# Run the application
 shinyApp(ui = ui, server = server)
+
