@@ -169,7 +169,7 @@ ggplot(full_dung_squid_chin, aes(x = year, y = wtcpue, color = species, size = d
   scale_color_manual(values = c("#74E291", "#59B4C3", "#211C6A"))+
    theme_minimal()
 
-
+write_csv(full_dung_squid_chin,here("data","full_dung_squid_chin.csv"))
 ```
 
 ## Landings vs Species
