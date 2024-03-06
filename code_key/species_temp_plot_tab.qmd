@@ -26,10 +26,7 @@ eis <- all %>%
 
 
 dismap_all_df <- read_csv(here("data", "full_dung_squid_chin.csv"))
-  
-  
-oilspill_raw_df <- read_csv(here("data", "oill_spill_incident_tracking.csv")) |>
-  clean_names()
+
 ```
 
 ## Depth Related Plots
@@ -851,6 +848,8 @@ dfs <- list(temp_2003, temp_2004, temp_2006, temp_2007, temp_2008, temp_2009, te
 
 temp_df <-Reduce(full_join, dfs)
 temp_df$year <- as.integer(temp_df$year)
+
+write_csv(temp_df,here("data","average_temp.csv"))
 ```
 
 
