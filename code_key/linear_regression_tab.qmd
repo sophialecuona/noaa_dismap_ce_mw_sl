@@ -9,6 +9,7 @@ library(here)
 library(tidyverse)
 library(janitor)
 library(dplyr)
+library(ggplot2)
 
 devtools::install_github("cfree14/wcfish", force=T)
 library(wcfish)
@@ -16,8 +17,7 @@ library(wcfish)
 all <- pacfin_all1
 
 eis <- all %>%
-  select(year, comm_name, value_usd, landings_mt, landings_kg, landings_lb, price_usd_lb) %>%
-  filter(comm_name %in% c("Chinook salmon", "Dungeness crab", "Market squid"))
+  select(year, comm_name, value_usd, landings_mt, landings_kg, landings_lb, price_usd_lb)
 ```
 
 ```{r}
@@ -97,7 +97,6 @@ dung_plot<-ggplot(dung_rev, aes(x= year, y= value_usd))+
 
 dung_plot
 ```
-
 ```{r}
 urchin_rev <- eis %>% 
   filter(comm_name == "Red sea urchin")
@@ -111,7 +110,6 @@ broom::tidy(urchin_output) %>%
   knitr::kable() %>% 
   kableExtra::kable_classic_2()
 ```
-
 ```{r}
 urchin_plot<-ggplot(urchin_rev, aes(x= year, y= value_usd))+
   geom_point()+
@@ -134,7 +132,669 @@ end = "2003-12-31"
 
 grid <- griddap(file_id,
                 time = c(start, end),
-                latitude = c(30, 49.2),
+                latitude = c(30, 42),
                 longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2003 <- grid %>%
+  mutate(year = '2003') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp)
+
+temp_2003 <- temp_2003[1, ]
+  
+#temp_val2003<-grid %>% 
+# mean of grid temp_val
+#repeat for 20 years
+#put all the repeated things in one dataframe
   
 ```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2004-01-01"
+
+end = "2004-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2004 <- grid %>%
+  mutate(year = '2004') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2004 <- temp_2004[1, ]
+```
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2005-01-01"
+
+end = "2005-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2005 <- grid %>%
+  mutate(year = '2005') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2005 <- temp_2005[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2006-01-01"
+
+end = "2006-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2006 <- grid %>%
+  mutate(year = '2006') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2006 <- temp_2006[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2007-01-01"
+
+end = "2007-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2007 <- grid %>%
+  mutate(year = '2007') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2007 <- temp_2007[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2008-01-01"
+
+end = "2008-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2008 <- grid %>%
+  mutate(year = '2008') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2008 <- temp_2008[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2009-01-01"
+
+end = "2009-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2009 <- grid %>%
+  mutate(year = '2009') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2009 <- temp_2009[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2010-01-01"
+
+end = "2010-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2010 <- grid %>%
+  mutate(year = '2010') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2010 <- temp_2010[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2011-01-01"
+
+end = "2011-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2011 <- grid %>%
+  mutate(year = '2011') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2011 <- temp_2011[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2012-01-01"
+
+end = "2012-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2012 <- grid %>%
+  mutate(year = '2012') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2012 <- temp_2012[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2013-01-01"
+
+end = "2013-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2013 <- grid %>%
+  mutate(year = '2013') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2013 <- temp_2013[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2014-01-01"
+
+end = "2014-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2014 <- grid %>%
+  mutate(year = '2014') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2014 <- temp_2014[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2015-01-01"
+
+end = "2015-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2015 <- grid %>%
+  mutate(year = '2015') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2015 <- temp_2015[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2016-01-01"
+
+end = "2016-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2016 <- grid %>%
+  mutate(year = '2016') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2016 <- temp_2016[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2017-01-01"
+
+end = "2017-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2017 <- grid %>%
+  mutate(year = '2017') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2017 <- temp_2017[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2018-01-01"
+
+end = "2018-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2018 <- grid %>%
+  mutate(year = '2018') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2018 <- temp_2018[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2019-01-01"
+
+end = "2019-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2019 <- grid %>%
+  mutate(year = '2019') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2019 <- temp_2019[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2020-01-01"
+
+end = "2020-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2020 <- grid %>%
+  mutate(year = '2020') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2020 <- temp_2020[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2021-01-01"
+
+end = "2021-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2021 <- grid %>%
+  mutate(year = '2021') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2021 <- temp_2021[1, ]
+```
+
+```{r}
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2022-01-01"
+
+end = "2022-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 42),
+                longitude = c(-115, 130))$data
+
+
+library(dplyr)
+library(lubridate)
+library(tidyr)
+
+temp_2022 <- grid %>%
+  mutate(year = '2022') %>% 
+  select(sea_surface_temperature, year) %>%
+  drop_na() %>% 
+  mutate(average_temp = mean(sea_surface_temperature)) %>% 
+  select(year, average_temp) 
+
+temp_2022 <- temp_2022[1, ]
+```
+
+```{r}
+dfs <- list(temp_2003, temp_2004, temp_2006, temp_2007, temp_2008, temp_2009, temp_2010, temp_2011, temp_2012, temp_2013, temp_2014, temp_2015, temp_2016, temp_2017, temp_2018, temp_2019, temp_2020, temp_2021, temp_2022)
+
+temp_df <-Reduce(full_join, dfs)
+temp_df$year <- as.integer(temp_df$year)
+```
+Temperature by Revenue 
+```{r}
+squid_temp_rev <- eis %>% 
+  filter(comm_name == "Market squid") %>% 
+  full_join(temp_df, by = 'year')
+
+  
+squidrev_output<-lm(value_usd ~ average_temp, data=squid_temp_rev) #linear model (lm) 
+squidrev_output # gets only the coefficients
+summary(squidrev_output)  
+
+broom::tidy(squidrev_output) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_classic_2()
+```
+```{r}
+
+
+squidrev_plot<-ggplot(squid_temp_rev, aes(x= average_temp, y= value_usd))+
+  geom_point()+
+  labs(x="Sea Surface Temperature (C) ", y="Revenue in Millions (USD)")+
+  geom_abline(intercept = coef(squidrev_output)[1], 
+              slope = coef(squidrev_output)[2])+
+  theme_bw()+
+  scale_y_continuous(labels = scales::label_number(scale = 1e-6))
+
+
+
+squidrev_plot
+```
+
+```{r}
+chinook_temp_rev <- eis %>% 
+  filter(comm_name == "Chinook salmon") %>% 
+  full_join(temp_df, by = 'year')
+
+chinookrev_output<-lm(value_usd ~ average_temp, data=chinook_temp_rev) #linear model (lm) 
+chinookrev_output # gets only the coefficients
+summary(chinookrev_output)
+
+broom::tidy(chinookrev_output) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_classic_2()
+```
+```{r}
+chinookrev_plot<-ggplot(chinook_temp_rev, aes(x= average_temp, y= value_usd))+
+  geom_point()+
+  labs(x="Sea Surface Temperature (C)", y="Revenue in Millions (USD)")+
+  geom_abline(intercept = coef(chinookrev_output)[1], 
+              slope = coef(chinookrev_output)[2])+
+  theme_bw()+
+  scale_y_continuous(labels = scales::label_number(scale = 1e-6))
+
+chinookrev_plot
+```
+
+```{r}
+
+dung_temp_rev <- eis %>% 
+  filter(comm_name == "Dungeness crab") %>% 
+  full_join(temp_df, by = 'year')
+
+dungrev_output<-lm(value_usd ~ average_temp, data=dung_temp_rev) #linear model (lm) 
+dungrev_output # gets only the coefficients
+summary(dungrev_output)
+
+broom::tidy(dungrev_output) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_classic_2()
+
+dungrev_plot<-ggplot(dung_temp_rev, aes(x= average_temp, y= value_usd))+
+  geom_point()+
+  labs(x="Sea Surface Temperature (C)", y="Revenue in Millions (USD)")+
+  geom_abline(intercept = coef(dungrev_output)[1], 
+              slope = coef(dungrev_output)[2])+
+  theme_bw()+
+  scale_y_continuous(labels = scales::label_number(scale = 1e-6))
+
+dungrev_plot
+
+```
+```{r}
+urchin_temp_rev <- eis %>% 
+  filter(comm_name == "Red sea urchin") %>% 
+  full_join(temp_df, by = 'year')
+
+urchinrev_output<-lm(value_usd ~ average_temp, data=urchin_temp_rev) #linear model (lm) 
+urchinrev_output # gets only the coefficients
+summary(urchinrev_output)
+
+broom::tidy(urchinrev_output) %>% 
+  knitr::kable() %>% 
+  kableExtra::kable_classic_2()
+
+urchinrev_plot<-ggplot(urchin_temp_rev, aes(x= average_temp, y= value_usd))+
+  geom_point()+
+  labs(x="Sea Surface Temperature (C)", y="Revenue in Millions (USD)")+
+  geom_abline(intercept = coef(urchinrev_output)[1], 
+              slope = coef(urchinrev_output)[2])+
+  theme_bw()+
+  scale_y_continuous(labels = scales::label_number(scale = 1e-6))
+
+urchinrev_plot
+```
+
