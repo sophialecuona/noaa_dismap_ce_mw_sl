@@ -273,15 +273,33 @@ eis_dismap <- full_join(
 #### GOAL IS TO GET WTCPUE VS LANDINGS CAPTURED
 ```
 
-## Mapping the joined data sets
+## Temperature Wrangling
 
 ```{r}
-#STILL WORKING ON THE JOINING COMPONENT FIRST
-```
+#Maddie's
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
 
-## Temperature Related Plots (do not have yet)
+start = "2003-01-01"
 
-```{r}
+end = "2003-12-31"
+
+grid <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 49.2),
+                longitude = c(-115, 130))$data
+
+library(rerddap)
+file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
+
+start = "2004-01-01"
+
+end = "2004-12-31"
+
+grid_04 <- griddap(file_id,
+                time = c(start, end),
+                latitude = c(30, 49.2),
+                longitude = c(-115, 130))$data 
 
 ```
 
