@@ -294,9 +294,9 @@ year_plots <- lapply(2003:2022, function(years) {
 })
 
 # save as PNG files
-lapply(1:length(year_plots), function(i) {
-  ggsave(filename = paste0("dung_map_", 2003 + i - 1, ".png"), plot = year_plots[[i]], width = 10, height = 8)
-})
+# lapply(1:length(year_plots), function(i) {
+#   ggsave(filename = paste0("dung_map_", 2003 + i - 1, ".png"), plot = year_plots[[i]], width = 10, height = 8)
+# })
 ```
 
 ## Squid
@@ -327,7 +327,7 @@ squid_year_plots <- lapply(2003:2022, function(years) {
             size = 3) +
     scale_shape_manual(values = 15) + 
     labs(title = paste("Market Squid Distribution -", years)) +
-    guides(shape = "none") + 
+    guides(shape = "none", wtcpue = "Catch per unit effort") + 
     theme_void()
   
   print(squid_map_year)
@@ -376,14 +376,14 @@ urchin_year_plots <- lapply(2003:2022, function(years) {
             size = 3) +
     scale_shape_manual(values = 15) + 
     labs(title = paste("Northern Heart Urchin Distribution -", years)) +
-    guide(shape = "none")+
+    guides(shape = "none", color = "Catch per unit effort") +
     theme_void()
   
   print(urchin_map_year)
 })
 
 # save as PNG files
-lapply(1:length(urchin_year_plots), function(i) {
-  ggsave(filename = paste0("urchin_map_", 2003 + i - 1, ".png"), plot = urchin_year_plots[[i]], width = 10, height = 8)
-})
+# lapply(1:length(urchin_year_plots), function(i) {
+#   ggsave(filename = paste0("urchin_map_", 2003 + i - 1, ".png"), plot = urchin_year_plots[[i]], width = 10, height = 8)
+# })
 ```
