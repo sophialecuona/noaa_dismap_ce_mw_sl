@@ -185,6 +185,7 @@ full_dung_squid_urch1 <- full_join(
   filter(!wtcpue == 0)%>%
   filter(lat < 42)
 
+message("Fixing CRS")
 sf_dsc <- st_as_sf(full_dung_squid_urch1, coords = c("long", "lat"), crs = 4326)
 
 dsc <- st_transform(sf_dsc, st_crs(ca_counties_raw_sf))
