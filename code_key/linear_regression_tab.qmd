@@ -97,6 +97,7 @@ dung_plot<-ggplot(dung_rev, aes(x= year, y= value_usd))+
 
 dung_plot
 ```
+
 ```{r}
 urchin_rev <- eis %>% 
   filter(comm_name == "Red sea urchin")
@@ -110,6 +111,7 @@ broom::tidy(urchin_output) %>%
   knitr::kable() %>% 
   kableExtra::kable_classic_2()
 ```
+
 ```{r}
 urchin_plot<-ggplot(urchin_rev, aes(x= year, y= value_usd))+
   geom_point()+
@@ -183,6 +185,7 @@ temp_2004 <- grid %>%
 
 temp_2004 <- temp_2004[1, ]
 ```
+
 ```{r}
 library(rerddap)
 file_id <- rerddap::info(datasetid = "NOAA_DHW_monthly")
@@ -693,7 +696,9 @@ dfs <- list(temp_2003, temp_2004, temp_2006, temp_2007, temp_2008, temp_2009, te
 temp_df <-Reduce(full_join, dfs)
 temp_df$year <- as.integer(temp_df$year)
 ```
-Temperature by Revenue 
+
+Temperature by Revenue
+
 ```{r}
 squid_temp_rev <- eis %>% 
   filter(comm_name == "Market squid") %>% 
@@ -708,6 +713,7 @@ broom::tidy(squidrev_output) %>%
   knitr::kable() %>% 
   kableExtra::kable_classic_2()
 ```
+
 ```{r}
 
 
@@ -737,6 +743,7 @@ broom::tidy(chinookrev_output) %>%
   knitr::kable() %>% 
   kableExtra::kable_classic_2()
 ```
+
 ```{r}
 chinookrev_plot<-ggplot(chinook_temp_rev, aes(x= average_temp, y= value_usd))+
   geom_point()+
@@ -774,6 +781,7 @@ dungrev_plot<-ggplot(dung_temp_rev, aes(x= average_temp, y= value_usd))+
 dungrev_plot
 
 ```
+
 ```{r}
 urchin_temp_rev <- eis %>% 
   filter(comm_name == "Red sea urchin") %>% 
@@ -797,4 +805,3 @@ urchinrev_plot<-ggplot(urchin_temp_rev, aes(x= average_temp, y= value_usd))+
 
 urchinrev_plot
 ```
-
