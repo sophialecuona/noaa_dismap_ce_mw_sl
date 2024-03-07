@@ -877,6 +877,10 @@ dismap_all_df <- dismap_all_df %>%
 
 rollin_dismap <- dismap_all_df %>%
   mutate(rolling_avg = zoo::rollmean(wtcpue, k=20, fill = NA, align='right'))
+
+rollin_dismap <- dismap_all_df %>%
+  mutate(rolling_avg = zoo::rollmean(wtcpue, k = 20, fill = NA, align = 'right'),
+         log_rolling_avg = log(rolling_avg))
   
 
 merged_dis_temp <- merge(avg_temp_df, dismap_all_df, by = "year")
@@ -930,14 +934,7 @@ ggplot(merged_dis_temp, aes(x = year)) +
 
 merge_nochinook <- merged_dis_temp[merged_dis_temp$species != "chinook", ]
 
-ggplot(merge_nochinook, aes(x = year)) +
-  geom_line(aes(y = average_temp, group = species, color = species)) +
-  geom_point(aes(y = wtcpue, color = species), size = 3) +
-  facet_wrap(~ species, scales = "free_y", ncol = 1) +
-  labs(title = "Line Plot and Scatter Points with Independent Y-Axes",
-       x = "Year",
-       y = "Weighted CPUE")+
-  theme_cowplot()
+#Note took the log of the rolling avg of wtcpue before graphing
 
 library(stringr)
 
@@ -969,7 +966,7 @@ ggplot(merge_nochinook, aes(x = year)) +
     x = "Year",
     y = "Weighted CPUE")+
   scale_color_manual(
-    values = c("steelblue", "darkgreen"),
+    values = c("#603B38", "#CF9555"),
     breaks = c("squid", "dungeness"),
     labels = c("Squid", "Dungeness Crab")
   ) +
@@ -979,12 +976,9 @@ ggplot(merge_nochinook, aes(x = year)) +
     strip.background = element_blank(),
     strip.placement = "outside",
     axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-    legend.position = "top",
+    legend.position = "right",
     legend.box.margin = margin(10, 0, 0, 0),
     legend.title = element_text(face = "bold")
   )
- 
-
-
 
 ```
