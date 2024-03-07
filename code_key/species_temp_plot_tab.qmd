@@ -27,6 +27,8 @@ eis <- all %>%
 
 dismap_all_df <- read_csv(here("data", "full_dung_squid_chin.csv"))
 
+avg_temp_df <- read_csv(here("data", "average_temp.csv"))
+
 ```
 
 ## Depth Related Plots
@@ -869,7 +871,17 @@ ggplot(temp_df, aes(x = year, y = average_temp)) +
 #CPUE on top
 
 #merged by year to combine dismap and avg temp data  
-merged_dis_temp <- merge(temp_df, dismap_all_df, by = "year")
+dismap_all_df <- dismap_all_df %>%
+  mutate(positive_scaled_wtcpue = abs(scale(wtcpue)) * 20) |>
+  mutate(rollin_avg_wtcpue = zoo::rollmean(wtcpue, k=10, fill=NA, align='right'))
+
+rollin_dismap <- dismap_all_df %>%
+  mutate(rolling_avg = zoo::rollmean(wtcpue, k=20, fill = NA, align='right'))
+  
+
+merged_dis_temp <- merge(avg_temp_df, dismap_all_df, by = "year")
+
+roll_merge_dis_temp <- merge(avg_temp_df, rollin_dismap, by = "year")
 
 ggplot() +
   geom_line(data = merged_dis_temp, aes(x = year, y = average_temp), color = "blue", linetype = "solid") +
@@ -878,9 +890,101 @@ ggplot() +
        x = "X Axis Label",
        y = "Y Axis Label")
 
-ggplot(merged_dis_temp, aes(x = year, y = average_temp, color = species)) +
+#Rolling Average Merge
+ggplot(rollin_dismap, aes(x = year, y = rolling_avg, color = species)) +
   geom_line() +
   labs(title = "Line Plot with Multiple Lines",
        x = "Year",
        y = "Value")
+
+ggplot(subset(rollin_dismap, species %in% c("dungeness", "squid")), 
+       aes(x = year, y = rolling_avg, color = species)) +
+  geom_point() +
+  labs(title = "Line Plot with Multiple Lines",
+       x = "Year",
+       y = "Rolling Averae of Weighted CPUE")
+
+#Avg Temp Across Year
+ggplot(merged_dis_temp, aes(x = year, y = average_temp)) +
+  geom_line() +
+  labs(title = "Line Plot with Multiple Lines",
+       x = "Year",
+       y = "Value")
+
+ggplot(merged_dis_temp, aes(x = year, y = average_temp)) +
+  geom_line() +
+  labs(title = "Line Plot with Multiple Lines",
+       x = "Year",
+       y = "Value")
+
+ggplot(merged_dis_temp, aes(x = year)) +
+  geom_line(aes(y = average_temp, group = species, color = species)) +
+  geom_point(aes(y = wtcpue, color = species), size = 3) +
+  facet_grid(. ~ species, scales = "free_y") +
+  labs(title = "Line Plot and Scatter Points with Independent Y-Axes",
+       x = "Year",
+       y = NULL)
+
+
+#Remove Chinook
+
+merge_nochinook <- merged_dis_temp[merged_dis_temp$species != "chinook", ]
+
+ggplot(merge_nochinook, aes(x = year)) +
+  geom_line(aes(y = average_temp, group = species, color = species)) +
+  geom_point(aes(y = wtcpue, color = species), size = 3) +
+  facet_wrap(~ species, scales = "free_y", ncol = 1) +
+  labs(title = "Line Plot and Scatter Points with Independent Y-Axes",
+       x = "Year",
+       y = "Weighted CPUE")+
+  theme_cowplot()
+
+library(stringr)
+
+#Option 1
+ggplot(merge_nochinook, aes(x = year)) +
+  geom_line(aes(y = average_temp), color = "red") +
+  geom_point(aes(y = wtcpue, color = species), size = 3) +
+  scale_x_discrete(labels = c("Dungeness", "Squid")) +
+  facet_wrap(~ species, scales = "free_y", ncol = 1, labeller = labeller(species = c("squid" = "Squid", "dungeness" = "Dungeness Crab"))) +
+  labs(title = "Squid and Dungeness Crab CPUE vs Temperature",
+       x = "Year",
+       y = "Weighted CPUE") +
+  scale_color_manual(
+    values = c("steelblue", "darkgreen"),
+    breaks = c("squid", "dungeness"),
+    labels = c("Squid", "Dungeness Crab")
+  ) +
+  guides(color = guide_legend(title = "Species")) +
+  theme(strip.background = element_blank(), strip.placement = "outside")
+
+#Option 2
+ggplot(merge_nochinook, aes(x = year)) +
+  geom_line(aes(y = average_temp), color = "red", size = 1) +
+  geom_point(aes(y = wtcpue, color = species), size = 3, alpha = 0.8) +
+  scale_x_discrete(labels = c("Dungeness", "Squid")) +
+  facet_wrap(~ species, scales = "free_y", ncol = 1, labeller = labeller(species = c("squid" = "Squid", "dungeness" = "Dungeness Crab"))) +
+  labs(
+    title = "Squid and Dungeness Crab CPUE vs Temperature",
+    x = "Year",
+    y = "Weighted CPUE")+
+  scale_color_manual(
+    values = c("steelblue", "darkgreen"),
+    breaks = c("squid", "dungeness"),
+    labels = c("Squid", "Dungeness Crab")
+  ) +
+  guides(color = guide_legend(title = "Species")) +
+  theme_minimal() +
+  theme(
+    strip.background = element_blank(),
+    strip.placement = "outside",
+    axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+    legend.position = "top",
+    legend.box.margin = margin(10, 0, 0, 0),
+    legend.title = element_text(face = "bold")
+  )
+ 
+
+
+
 ```
