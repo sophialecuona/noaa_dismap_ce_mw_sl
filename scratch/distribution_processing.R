@@ -78,7 +78,9 @@ dung_anim <- dung_plot +
   transition_time(year) +
   enter_appear()
 
-anim_save("distribution_app_noaa/www/dung_distribution.gif", animation = dung_anim, nframes = 19)
+anim_save("distribution_app_noaa/www/dung_distribution.gif", animation = dung_anim, nframes = 100,  # Increase the number of frames for smoother animation
+          duration = 10,  # Increase the total duration of the animation
+          fps = 1)
 
 
 ## Squid animate plot
@@ -109,7 +111,9 @@ squid_anim <- squid_plot +
   transition_time(year) +
   enter_appear()
 
-anim_save("distribution_app_noaa/www/squid_distribution.gif", animation = squid_anim, nframes = 19)
+anim_save("distribution_app_noaa/www/squid_distribution.gif", animation = squid_anim, nframes = 100,  # Increase the number of frames for smoother animation
+          duration = 10,  # Increase the total duration of the animation
+          fps = 1)
 
 ## Urchin animation
 urchin_plot <- ggplot() +
@@ -131,7 +135,11 @@ urchin_anim <- urchin_plot +
   transition_time(year) +
   enter_appear()
 
-anim_save("distribution_app_noaa/www/urchin_distribution.gif", animation = urchin_anim, nframes = 19)
+anim_save("distribution_app_noaa/www/urchin_distribution.gif",
+          animation = urchin_anim,
+          nframes = 100,  # Increase the number of frames for smoother animation
+          duration = 10,  # Increase the total duration of the animation
+          fps = 1)
 
 # MADDIE Plots:
 

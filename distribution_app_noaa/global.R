@@ -7,6 +7,7 @@ library(shinycssloaders)
 library(sf)
 library(markdown)
 library(fresh)
+library(shinycssloaders)
 
 # READ IN DATA ----
 ca_counties_sf <- read_csv("data/ca_counties_sf.csv")
