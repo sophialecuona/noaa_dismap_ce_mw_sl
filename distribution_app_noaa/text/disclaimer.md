@@ -1,0 +1,1 @@
+This app is build for Bren student educational purposes only and is not paid for or endorsed by NOAA or affiliates in any way. The data as presented here are not intended for publication nor scientific interpretation. 

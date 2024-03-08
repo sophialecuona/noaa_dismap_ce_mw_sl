@@ -1,0 +1,1 @@
+The goal of this project is to allow users to interact with economically important species along the coast of California, to gain a better understanding of the species distribution and revenue by year.  With the addition of depth and temperature data, insights into how a changing climate may impact distribution, catch per unit effort, and revenue per stock can be observed.
