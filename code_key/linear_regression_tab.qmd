@@ -692,6 +692,8 @@ dfs <- list(temp_2003, temp_2004, temp_2005, temp_2006, temp_2007, temp_2008, te
 
 temp_df <-Reduce(full_join, dfs)
 temp_df$year <- as.integer(temp_df$year)
+
+write_csv(temp_df,here("data","average_temp.csv"))
 ```
 Temperature by Revenue 
 ```{r}
