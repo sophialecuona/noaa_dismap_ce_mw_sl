@@ -242,21 +242,19 @@ ggplot(temp_df, aes(x = year, y = average_temp)) +
 #CPUE on top
 
 #merged by year to combine dismap and avg temp data  
-dismap_all_df <- dismap_all_df %>%
+#dismap_all_df <- dismap_all_df %>%
   mutate(positive_scaled_wtcpue = abs(scale(wtcpue)) * 20) |>
   mutate(rollin_avg_wtcpue = zoo::rollmean(wtcpue, k=10, fill=NA, align='right'))
 
-rollin_dismap <- dismap_all_df %>%
+#rollin_dismap <- dismap_all_df %>%
   mutate(rolling_avg = zoo::rollmean(wtcpue, k=20, fill = NA, align='right'))
 
-rollin_dismap <- dismap_all_df %>%
+#rollin_dismap <- dismap_all_df %>%
   mutate(rolling_avg = zoo::rollmean(wtcpue, k = 20, fill = NA, align = 'right'),
          log_rolling_avg = log(rolling_avg))
   
 
-merged_dis_temp <- merge(avg_temp_df, dismap_all_df, by = "year")
-
-roll_merge_dis_temp <- merge(avg_temp_df, rollin_dismap, by = "year")
+#roll_merge_dis_temp <- merge(avg_temp_df, rollin_dismap, by = "year")
 
 ggplot() +
   geom_line(data = merged_dis_temp, aes(x = year, y = average_temp), color = "blue", linetype = "solid") +
@@ -302,7 +300,7 @@ ggplot(merged_dis_temp, aes(x = year)) +
 
 
 #####            Remove Chinook
-
+merged_dis_temp <- merge(avg_temp_df, dismap_all_df, by = "year")
 merge_nochinook <- merged_dis_temp[merged_dis_temp$species != "chinook", ]
 
 #Note took the log of the rolling avg of wtcpue before graphing
@@ -310,28 +308,54 @@ merge_nochinook <- merged_dis_temp[merged_dis_temp$species != "chinook", ]
 library(stringr)
 
 #Option 1
+#ggplot(merge_nochinook, aes(x = year)) +
+  #geom_line(aes(y = average_temp), color = "red") +
+  #geom_point(aes(y = wtcpue, color = species), size = 3) +
+  #scale_x_discrete(labels = c("Dungeness", "Squid")) +
+  #facet_wrap(~ species, scales = "free_y", ncol = 1, labeller = labeller(species = c("squid" = "Squid", "dungeness" = "Dungeness Crab"))) +
+  #labs(title = "Squid and Dungeness Crab CPUE vs Temperature",
+       x = "Year",
+       y = "Weighted CPUE") +
+  #scale_color_manual(
+    values = c("steelblue", "darkgreen"),
+    breaks = c("squid", "dungeness"),
+    labels = c("Squid", "Dungeness Crab")
+  ) +
+  #guides(color = guide_legend(title = "Species")) +
+  #theme(strip.background = element_blank(), strip.placement = "outside")
+
+#SWITCHING Y AXES - USE THIS ONE
 ggplot(merge_nochinook, aes(x = year)) +
-  geom_line(aes(y = average_temp), color = "red") +
-  geom_point(aes(y = wtcpue, color = species), size = 3) +
+  geom_point(aes(y = wtcpue, color = species), alpha = 0.5, size = 1.5) +  # Swap y = average_temp with y = wtcpue
+  geom_line(aes(y = average_temp), color = "red", size = 1.5) + # Swap y = wtcpue with y = average_temp
   scale_x_discrete(labels = c("Dungeness", "Squid")) +
   facet_wrap(~ species, scales = "free_y", ncol = 1, labeller = labeller(species = c("squid" = "Squid", "dungeness" = "Dungeness Crab"))) +
   labs(title = "Squid and Dungeness Crab CPUE vs Temperature",
        x = "Year",
        y = "Weighted CPUE") +
   scale_color_manual(
-    values = c("steelblue", "darkgreen"),
+    values = c("#603B38", "#CF9555"),
     breaks = c("squid", "dungeness"),
     labels = c("Squid", "Dungeness Crab")
   ) +
   guides(color = guide_legend(title = "Species")) +
-  theme(strip.background = element_blank(), strip.placement = "outside")
+  theme(strip.background = element_blank(), strip.placement = "outside")+
+ scale_y_continuous(
+    sec.axis = sec_axis(~., name = "Temperature (°C)", breaks = seq(0, 30, by = 5)),
+    name = "Weighted CPUE",
+    limits = c(0, max(merge_nochinook$average_temp) * 3)  # Adjust the limits as needed
+  )
 
-#Option 2
-ggplot(merge_nochinook, aes(x = year)) +
-  geom_line(aes(y = average_temp), color = "red", size = 1) +
-  geom_point(aes(y = wtcpue, color = species), size = 3, alpha = 0.8) +
-  scale_x_discrete(labels = c("Dungeness", "Squid")) +
-  facet_wrap(~ species, scales = "free_y", ncol = 1, labeller = labeller(species = c("squid" = "Squid", "dungeness" = "Dungeness Crab"))) +
+
+
+
+
+#Option 2 USE COLORS
+#ggplot(merge_nochinook, aes(x = year)) +
+  #geom_point(aes(y = wtcpue, color = species), size = 1, alpha = 0.5) +
+  #geom_line(aes(y = average_temp), color = "red", size = 1.5) +
+  #scale_x_discrete(labels = c("Dungeness", "Squid")) +
+  facet_wrap(~ species, ncol = 1, labeller = labeller(species = c("squid" = "Squid", "dungeness" = "Dungeness Crab"))) +
   labs(
     title = "Squid and Dungeness Crab CPUE vs Temperature",
     x = "Year")+
@@ -346,7 +370,7 @@ ggplot(merge_nochinook, aes(x = year)) +
     name = "Temperature",
     
     # Add a second axis and specify its features
-    sec.axis = sec_axis(~.*coeff, name="Weighted CPUE")
+    sec.axis = sec_axis(~.*.1, name="Weighted CPUE")
   ) +
   guides(color = guide_legend(title = "Species")) +
   theme_minimal() +
