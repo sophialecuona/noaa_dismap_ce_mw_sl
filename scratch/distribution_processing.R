@@ -6,12 +6,18 @@ library(ggplot2)
 library(gganimate)
 library(magick)
 library(gifski)
+library(cowplot)
+library(patchwork)
+library(dplyr)
 
 # Spatial data packages
 library(sf)
 library(tmap)
 library(spatstat)
 library(terra)
+
+
+# SOPHIA Plots:
 
 # CA Counties processing
 ca_counties_raw_sf <- read_sf(here("data", "ca_counties2", "CA_Counties_TIGER2016.shp"))
@@ -126,3 +132,8 @@ urchin_anim <- urchin_plot +
   enter_appear()
 
 anim_save("distribution_app_noaa/www/urchin_distribution.gif", animation = urchin_anim, nframes = 19)
+
+# MADDIE Plots:
+
+
+# CAROLINE Plots:
