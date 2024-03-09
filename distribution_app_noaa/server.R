@@ -37,4 +37,29 @@ server <- function(input, output) {
       )
   })
 
+  # build cpue plots ----
+  output$cpue_temp <- renderPlot({
+
+    ggplot(merge_nochinook, aes(x = year)) +
+      geom_point(aes(y = wtcpue, color = species), alpha = 0.5, size = 1.5) +  # Swap y = average_temp with y = wtcpue
+      geom_line(aes(y = average_temp), color = "red", size = 1.5) + # Swap y = wtcpue with y = average_temp
+      scale_x_discrete(labels = c("Dungeness", "Squid")) +
+      facet_wrap(~ species, scales = "free_y", ncol = 1, labeller = labeller(species = c("squid" = "Squid", "dungeness" = "Dungeness Crab"))) +
+      labs(title = "Squid and Dungeness Crab CPUE vs Temperature",
+           x = "Year",
+           y = "Weighted CPUE") +
+      scale_color_manual(
+        values = c("#603B38", "#CF9555"),
+        breaks = c("squid", "dungeness"),
+        labels = c("Squid", "Dungeness Crab")
+      ) +
+      guides(color = guide_legend(title = "Species")) +
+      theme(strip.background = element_blank(), strip.placement = "outside")+
+      scale_y_continuous(
+        sec.axis = sec_axis(~., name = "Temperature (°C)", breaks = seq(0, 30, by = 5)),
+        name = "Weighted CPUE",
+        limits = c(0, max(merge_nochinook$average_temp) * 3)  # Adjust the limits as needed
+      )
+  })
+
 }

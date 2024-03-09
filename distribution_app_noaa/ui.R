@@ -234,8 +234,8 @@ body <- dashboardBody(
 
                   # sliderInputs ----
                   sliderInput(inputId = "depth_slider_input", label = "Depth (*meters* below SL):",
-                              min = min(full_dung_squid_urch1$depth), max = max(full_dung_squid_urch1$depth),
-                              value = c(min(full_dung_squid_urch1$depth), max(full_dung_squid_urch1$depth))),
+                              min = min(merge_nochinook$depth), max = max(merge_nochinook$depth),
+                              value = c(min(merge_nochinook$depth), max(merge_nochinook$depth))),
                   # selectInput ----
                   checkboxGroupInput(inputId = "species_select_input",
                                      label = "Select Species:",
@@ -243,19 +243,18 @@ body <- dashboardBody(
                                      selected = "dungeness"),
                   # sliderInputs ----
                   sliderInput(inputId = "year_slider_input", label = "Years surveyed:",
-                              min = min(full_dung_squid_urch1$year), max = max(full_dung_squid_urch1$year),
-                              value = c(min(full_dung_squid_urch1$year), max(full_dung_squid_urch1$year)),
+                              min = min(merge_nochinook$year), max = max(merge_nochinook$year),
+                              value = c(min(merge_nochinook$year), max(merge_nochinook$year)),
                               sep = "")
 
               ), # END input box
 
               box(width = 8, height = 500,
 
-                  title = tags$strong("Distribution of Dungeness, Market Squid, and Urchin along the California Coast"),
+                  title = tags$strong("WCPUE by Temperature"),
 
-                  # leaflet output ----
-                  leafletOutput(outputId = "coast_map_output") |>
-                    withSpinner(type = 1, color = "darkblue")
+                  # cpue output ----
+                  plotOutput(outputId = "cpue_temp")
 
               ), # END leaflet box
 
