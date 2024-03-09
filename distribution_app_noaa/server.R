@@ -65,3 +65,21 @@ server <- function(input, output) {
   })
 
 }
+# revenue plots
+output$revenue_plot <- renderPlot({
+  filtered <- filtered_data()
+  if (!is_empty(filtered)) {
+    revenue_output <- lm(value_usd ~ average_temp, data = filtered)
+    ggplot(filtered, aes(x = average_temp, y = value_usd)) +
+      geom_point() +
+      labs(x = "Sea Surface Temperature (C)", y = "Revenue in Millions (USD)") +
+      geom_abline(intercept = coef(revenue_output)[1],
+                  slope = coef(revenue_output)[2]) +
+      theme_bw() +
+      scale_y_continuous(labels = scales::label_number(scale = 1e-6))
+  } else {
+    ggplot() + geom_blank() +
+      labs(title = "No data available for selected species")
+  }
+})
+}
