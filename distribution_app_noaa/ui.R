@@ -191,31 +191,7 @@ body <- dashboardBody(
                   leafletOutput(outputId = "coast_map_output") |>
                     withSpinner(type = 1, color = "darkblue")
 
-              ), # END leaflet box
-
-              # input box ----
-              box(width = 4, height = 350,
-
-                  title = tags$strong("Dungeness Crab (2003 - 2022)"),
-                  tags$img(src= 'dung_distribution.gif', height = '280', width ='280')
-
-              ),# END input box ---
-
-              # input box ----
-              box(width = 4, height = 350,
-
-                  title = tags$strong("Squid Distribution (2003 - 2022)"),
-                  tags$img(src= 'squid_distribution.gif', height = '280', width ='280')
-
-              ), # END input box ---
-
-              # input box ----
-              box(width = 4, height = 350,
-
-                  title = tags$strong("Urchin Distribution (2003 - 2022)"),
-                  tags$img(src= 'urchin_distribution.gif', height = '280', width ='280')
-
-              )# END input box ---
+              ) # END leaflet box
 
             ) # END fluidRow
 
@@ -233,16 +209,16 @@ body <- dashboardBody(
                   title = tags$strong("Adjust depth ranges:"),
 
                   # sliderInputs ----
-                  sliderInput(inputId = "depth_slider_input", label = "Depth (*meters* below SL):",
+                  sliderInput(inputId = "depth_input", label = "Depth (*meters* below SL):",
                               min = min(merge_nochinook$depth), max = max(merge_nochinook$depth),
                               value = c(min(merge_nochinook$depth), max(merge_nochinook$depth))),
                   # selectInput ----
-                  checkboxGroupInput(inputId = "species_select_input",
+                  checkboxGroupInput(inputId = "species_input",
                                      label = "Select Species:",
                                      choices = c("dungeness", "squid", "urchin"),
                                      selected = "dungeness"),
                   # sliderInputs ----
-                  sliderInput(inputId = "year_slider_input", label = "Years surveyed:",
+                  sliderInput(inputId = "year_input", label = "Years surveyed:",
                               min = min(merge_nochinook$year), max = max(merge_nochinook$year),
                               value = c(min(merge_nochinook$year), max(merge_nochinook$year)),
                               sep = "")
@@ -256,31 +232,7 @@ body <- dashboardBody(
                   # cpue output ----
                   plotOutput(outputId = "cpue_temp")
 
-              ), # END leaflet box
-
-              # input box ----
-              box(width = 4, height = 350,
-
-                  title = tags$strong("Dungeness Crab (2003 - 2022)"),
-                  tags$img(src= 'dung_distribution.gif', height = '280', width ='280')
-
-              ),# END input box ---
-
-              # input box ----
-              box(width = 4, height = 350,
-
-                  title = tags$strong("Squid Distribution (2003 - 2022)"),
-                  tags$img(src= 'squid_distribution.gif', height = '280', width ='280')
-
-              ), # END input box ---
-
-              # input box ----
-              box(width = 4, height = 350,
-
-                  title = tags$strong("Urchin Distribution (2003 - 2022)"),
-                  tags$img(src= 'urchin_distribution.gif', height = '280', width ='280')
-
-              )# END input box ---
+              ) # END leaflet box
 
             ) # END fluidRow
 

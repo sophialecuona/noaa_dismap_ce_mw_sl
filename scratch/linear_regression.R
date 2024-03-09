@@ -14,6 +14,9 @@ eis <- all %>%
 
 temp_df <- read_csv(here("data","average_temp.csv"))
 
+## save processed data to the app's data directory ----
+write_csv(x = eis, file = here::here("distribution_app_noaa", "data", "eis.csv"))
+
 ### Squid
 ##############################################
 squid_temp_rev <- eis %>%
