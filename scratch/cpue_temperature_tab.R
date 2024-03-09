@@ -17,6 +17,10 @@ library(jpeg)
 dismap_all_df <- read_csv(here("data", "full_dung_squid_chin.csv"))
 avg_temp_df <- read_csv(here("data", "average_temp.csv"))
 
+## save processed data to the app's data directory ----
+write_csv(x = dismap_all_df, file = here::here("distribution_app_noaa", "data", "full_dung_squid_chin.csv"))
+write_csv(x = avg_temp_df, file = here::here("distribution_app_noaa", "data", "average_temp.csv"))
+
 #Filtering not to include Chinook
 merged_dis_temp <- merge(avg_temp_df, dismap_all_df, by = "year")
 merge_nochinook <- merged_dis_temp[merged_dis_temp$species != "chinook", ]

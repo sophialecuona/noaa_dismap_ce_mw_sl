@@ -14,6 +14,9 @@ eis <- all %>%
 
 temp_df <- read_csv(here("data","average_temp.csv"))
 
+## save processed data to the app's data directory ----
+write_csv(x = eis, file = here::here("distribution_app_noaa", "data", "eis.csv"))
+
 ### Squid
 ##############################################
 squid_temp_rev <- eis %>%
@@ -97,7 +100,8 @@ dungrev_plot
 #######################################################
 urchin_temp_rev <- eis %>%
   filter(comm_name == "Red sea urchin") %>%
-  full_join(temp_df, by = 'year')
+  full_join(temp_df, by = 'year') %>%
+  drop_na()
 
 urchinrev_output<-lm(value_usd ~ average_temp, data=urchin_temp_rev) #linear model (lm)
 urchinrev_output # gets only the coefficients
