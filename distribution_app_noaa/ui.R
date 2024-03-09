@@ -163,39 +163,20 @@ body <- dashboardBody(
 
               # input box ----
               box(width = 4, height = 500,
-
-                  title = tags$strong("Adjust depth ranges:"),
-
-                  # sliderInputs ----
-                  sliderInput(inputId = "depth_slider_input", label = "Depth (*meters* below SL):",
-                              min = min(full_dung_squid_urch1$depth), max = max(full_dung_squid_urch1$depth),
-                              value = c(min(full_dung_squid_urch1$depth), max(full_dung_squid_urch1$depth))),
-                  # selectInput ----
+                  title = tags$strong("Select Species:"),
                   checkboxGroupInput(inputId = "species_select_input",
                                      label = "Select Species:",
                                      choices = c("dungeness", "squid", "urchin"),
-                                     selected = "dungeness"),
-                  # sliderInputs ----
-                  sliderInput(inputId = "year_slider_input", label = "Years surveyed:",
-                              min = min(full_dung_squid_urch1$year), max = max(full_dung_squid_urch1$year),
-                              value = c(min(full_dung_squid_urch1$year), max(full_dung_squid_urch1$year)),
-                              sep = "")
-
+                                     selected = "dungeness")
               ), # END input box
 
               box(width = 8, height = 500,
-
-                  title = tags$strong("Distribution of Dungeness, Market Squid, and Urchin along the California Coast"),
-
-                  # leaflet output ----
-                  leafletOutput(outputId = "coast_map_output") |>
-                    withSpinner(type = 1, color = "darkblue")
-
-              ) # END leaflet box
-
+                  title = tags$strong("Revenue Plots"),
+                  plotOutput(outputId = "revenue_plot")
+              ) # END plot box
             ) # END fluidRow
-
-    ), # END revenue tabItem
+    ) # END revenue tabItem
+  ) # END fluidPage
 
     # cpue tabItem ----
     tabItem(tabName = "cpue",
