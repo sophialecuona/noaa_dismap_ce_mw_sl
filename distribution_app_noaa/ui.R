@@ -17,8 +17,8 @@ sidebar <- dashboardSidebar(
 
     menuItem(text = "Overview", tabName = "overview", icon = icon("star")),
     menuItem(text = "Distribution", tabName = "dashboard", icon = icon("fish")),
-    menuItem(text = "Revenue", tabName = "more", icon = icon("usd")),
-    menuItem(text = "CPUE", tabName = "moremore", icon = icon("fire"))
+    menuItem(text = "Revenue", tabName = "revenue", icon = icon("usd")),
+    menuItem(text = "CPUE", tabName = "cpue", icon = icon("fire"))
 
   ) # END sidebarMenu
 ) # END dashboardSidebar
@@ -153,7 +153,139 @@ body <- dashboardBody(
 
             ) # END fluidRow
 
-    ) # END dashboard tabItem
+    ), # END dashboard tabItem
+
+    # revenue tabItem ----
+    tabItem(tabName = "revenue",
+
+            # fluidRow ----
+            fluidRow(
+
+              # input box ----
+              box(width = 4, height = 500,
+
+                  title = tags$strong("Adjust depth ranges:"),
+
+                  # sliderInputs ----
+                  sliderInput(inputId = "depth_slider_input", label = "Depth (*meters* below SL):",
+                              min = min(full_dung_squid_urch1$depth), max = max(full_dung_squid_urch1$depth),
+                              value = c(min(full_dung_squid_urch1$depth), max(full_dung_squid_urch1$depth))),
+                  # selectInput ----
+                  checkboxGroupInput(inputId = "species_select_input",
+                                     label = "Select Species:",
+                                     choices = c("dungeness", "squid", "urchin"),
+                                     selected = "dungeness"),
+                  # sliderInputs ----
+                  sliderInput(inputId = "year_slider_input", label = "Years surveyed:",
+                              min = min(full_dung_squid_urch1$year), max = max(full_dung_squid_urch1$year),
+                              value = c(min(full_dung_squid_urch1$year), max(full_dung_squid_urch1$year)),
+                              sep = "")
+
+              ), # END input box
+
+              box(width = 8, height = 500,
+
+                  title = tags$strong("Distribution of Dungeness, Market Squid, and Urchin along the California Coast"),
+
+                  # leaflet output ----
+                  leafletOutput(outputId = "coast_map_output") |>
+                    withSpinner(type = 1, color = "darkblue")
+
+              ), # END leaflet box
+
+              # input box ----
+              box(width = 4, height = 350,
+
+                  title = tags$strong("Dungeness Crab (2003 - 2022)"),
+                  tags$img(src= 'dung_distribution.gif', height = '280', width ='280')
+
+              ),# END input box ---
+
+              # input box ----
+              box(width = 4, height = 350,
+
+                  title = tags$strong("Squid Distribution (2003 - 2022)"),
+                  tags$img(src= 'squid_distribution.gif', height = '280', width ='280')
+
+              ), # END input box ---
+
+              # input box ----
+              box(width = 4, height = 350,
+
+                  title = tags$strong("Urchin Distribution (2003 - 2022)"),
+                  tags$img(src= 'urchin_distribution.gif', height = '280', width ='280')
+
+              )# END input box ---
+
+            ) # END fluidRow
+
+    ), # END revenue tabItem
+
+    # cpue tabItem ----
+    tabItem(tabName = "cpue",
+
+            # fluidRow ----
+            fluidRow(
+
+              # input box ----
+              box(width = 4, height = 500,
+
+                  title = tags$strong("Adjust depth ranges:"),
+
+                  # sliderInputs ----
+                  sliderInput(inputId = "depth_slider_input", label = "Depth (*meters* below SL):",
+                              min = min(full_dung_squid_urch1$depth), max = max(full_dung_squid_urch1$depth),
+                              value = c(min(full_dung_squid_urch1$depth), max(full_dung_squid_urch1$depth))),
+                  # selectInput ----
+                  checkboxGroupInput(inputId = "species_select_input",
+                                     label = "Select Species:",
+                                     choices = c("dungeness", "squid", "urchin"),
+                                     selected = "dungeness"),
+                  # sliderInputs ----
+                  sliderInput(inputId = "year_slider_input", label = "Years surveyed:",
+                              min = min(full_dung_squid_urch1$year), max = max(full_dung_squid_urch1$year),
+                              value = c(min(full_dung_squid_urch1$year), max(full_dung_squid_urch1$year)),
+                              sep = "")
+
+              ), # END input box
+
+              box(width = 8, height = 500,
+
+                  title = tags$strong("Distribution of Dungeness, Market Squid, and Urchin along the California Coast"),
+
+                  # leaflet output ----
+                  leafletOutput(outputId = "coast_map_output") |>
+                    withSpinner(type = 1, color = "darkblue")
+
+              ), # END leaflet box
+
+              # input box ----
+              box(width = 4, height = 350,
+
+                  title = tags$strong("Dungeness Crab (2003 - 2022)"),
+                  tags$img(src= 'dung_distribution.gif', height = '280', width ='280')
+
+              ),# END input box ---
+
+              # input box ----
+              box(width = 4, height = 350,
+
+                  title = tags$strong("Squid Distribution (2003 - 2022)"),
+                  tags$img(src= 'squid_distribution.gif', height = '280', width ='280')
+
+              ), # END input box ---
+
+              # input box ----
+              box(width = 4, height = 350,
+
+                  title = tags$strong("Urchin Distribution (2003 - 2022)"),
+                  tags$img(src= 'urchin_distribution.gif', height = '280', width ='280')
+
+              )# END input box ---
+
+            ) # END fluidRow
+
+    ) # END cpue tabItem
 
   ) # END tabItems
 

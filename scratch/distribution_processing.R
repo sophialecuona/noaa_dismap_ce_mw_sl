@@ -30,7 +30,7 @@ ca_counties_sf <- ca_counties_raw_sf %>%
   mutate(land_km2 = aland / 1e6) %>%
   select(county = name, land_km2)
 
-## save processed data to your app's data directory ----
+## save processed data to the app's data directory ----
 write_csv(x = ca_counties_sf, file = here::here("distribution_app_noaa", "data", "ca_counties_sf.shp"))
 
 # DSC Survey data processing
@@ -40,7 +40,7 @@ sf_dsc <- st_as_sf(full_dung_squid_urch1, coords = c("long", "lat"), crs = 4326)
 
 dsc <- st_transform(sf_dsc, st_crs(ca_counties_sf))
 
-## save processed data to your app's data directory ----
+## save processed data to the app's data directory ----
 write_csv(x = dsc, file = here::here("distribution_app_noaa", "data", "dsc.csv"))
 
 
@@ -78,8 +78,8 @@ dung_anim <- dung_plot +
   transition_time(year) +
   enter_appear()
 
-anim_save("distribution_app_noaa/www/dung_distribution.gif", animation = dung_anim, nframes = 100,  # Increase the number of frames for smoother animation
-          duration = 10,  # Increase the total duration of the animation
+anim_save("distribution_app_noaa/www/dung_distribution.gif", animation = dung_anim, nframes = 100,
+          duration = 10,
           fps = 1)
 
 
@@ -140,8 +140,3 @@ anim_save("distribution_app_noaa/www/urchin_distribution.gif",
           nframes = 100,  # Increase the number of frames for smoother animation
           duration = 10,  # Increase the total duration of the animation
           fps = 1)
-
-# MADDIE Plots:
-
-
-# CAROLINE Plots:

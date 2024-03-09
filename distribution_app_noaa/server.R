@@ -6,7 +6,9 @@ server <- function(input, output) {
     full_dung_squid_urch1 |>
       filter(depth >= input$depth_slider_input[1] & depth <= input$depth_slider_input[2])  |>
       filter(year >= input$year_slider_input[1] & year <= input$year_slider_input[2]) |>
-      filter(species %in% input$species_select_input[1])
+      filter(species %in% input$species_select_input[1]) |>
+    merge_nochinook |>
+      filter(year >= input$year_slider_input[1] & year <= input$year_slider_input[2])
   })
 
 
