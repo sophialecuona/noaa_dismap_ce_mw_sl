@@ -175,8 +175,7 @@ body <- dashboardBody(
                   plotOutput(outputId = "revenue_plot")
               ) # END plot box
             ) # END fluidRow
-    ) # END revenue tabItem
-  ) # END fluidPage
+    ), # END revenue tabItem
 
     # cpue tabItem ----
     tabItem(tabName = "cpue",
