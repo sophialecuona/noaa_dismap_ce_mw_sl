@@ -1,7 +1,10 @@
 #........................dashboardHeader.........................
 header <- dashboardHeader(
   # add title ----
-  title = "Economically Important Species Distribution Along California",
+  # title = "Economically Important Species Distribution Along California",
+  # titleWidth = 600
+  title = tags$a(tags$img(src="bren_leaf.png", height = '40', width = '80'),
+                                  'Economically Important Species Distribution Along California', target="_blank", style = "color: #ffffff;"),
   titleWidth = 600
 
 ) # END dashboardHeader
