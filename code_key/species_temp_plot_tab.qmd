@@ -147,7 +147,7 @@ ggplot(full_dung_squid, aes(x = wtcpue, y = depth, fill = species)) +
 ```{r}
 #full_dung_dquid_chin dataset
 
-ggplot(full_dung_squid_chin, aes(x = year, y = wtcpue, color = species)) +
+ggplot(dismap_all_df, aes(x = year, y = wtcpue, color = species)) +
   geom_point() +
   geom_smooth(method = "glm", se = FALSE) + 
   labs(title = "CPUE vs. Species",
@@ -159,7 +159,7 @@ ggplot(full_dung_squid_chin, aes(x = year, y = wtcpue, color = species)) +
   theme(legend.title = element_text(face = "bold", size = 12))
 
 #Count chart
-ggplot(full_dung_squid_chin, aes(x = year, y = wtcpue, color = species)) +
+ggplot(dismap_all_df, aes(x = year, y = wtcpue, color = species)) +
   geom_count(show.legend = FALSE) +
   labs(title = "CPUE vs. Species",
        x = "Year",
@@ -177,7 +177,7 @@ ggplot(full_dung_squid_chin, aes(x = year, y = wtcpue, color = species)) +
 
 ```{r}
 #Bubble chart   ###### could add with other dataset to look at landings
-ggplot(full_dung_squid_chin, aes(x = year, y = wtcpue, color = species, size = depth)) +
+ggplot(dismap_all_df, aes(x = year, y = wtcpue, color = species, size = depth)) +
   geom_point(alpha = 0.6)+
   scale_size(range = c(.1, 10), name="Depth (m)")+
   labs(title = "CPUE vs. Species vs. Depth",
