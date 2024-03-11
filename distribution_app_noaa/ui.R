@@ -175,8 +175,7 @@ body <- dashboardBody(
                   plotOutput(outputId = "revenue_plot")
               ) # END plot box
             ) # END fluidRow
-    ) # END revenue tabItem
-  ) # END fluidPage
+    ), # END revenue tabItem
 
     # cpue tabItem ----
     tabItem(tabName = "cpue",
@@ -189,15 +188,6 @@ body <- dashboardBody(
 
                   title = tags$strong("Adjust depth ranges:"),
 
-                  # sliderInputs ----
-                  sliderInput(inputId = "depth_input", label = "Depth (*meters* below SL):",
-                              min = min(merge_nochinook$depth), max = max(merge_nochinook$depth),
-                              value = c(min(merge_nochinook$depth), max(merge_nochinook$depth))),
-                  # selectInput ----
-                  checkboxGroupInput(inputId = "species_input",
-                                     label = "Select Species:",
-                                     choices = c("dungeness", "squid", "urchin"),
-                                     selected = "dungeness"),
                   # sliderInputs ----
                   sliderInput(inputId = "year_input", label = "Years surveyed:",
                               min = min(merge_nochinook$year), max = max(merge_nochinook$year),

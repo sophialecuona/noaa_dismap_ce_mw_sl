@@ -8,9 +8,7 @@ server <- function(input, output) {
       filter(year >= input$year_slider_input[1] & year <= input$year_slider_input[2]) |>
       filter(species %in% input$species_select_input[1]) |>
     merge_nochinook |>
-      filter(depth >= input$depth_input[1] & depth <= input$depth_input[2])  |>
-      filter(year >= input$year_input[1] & year <= input$year_input[2]) |>
-      filter(species %in% input$species_input[1])
+      filter(year >= input$year_input[1] & year <= input$year_input[2])
   })
 
 
@@ -66,47 +64,21 @@ server <- function(input, output) {
 
   # build revenue plots ----
   output$revenue_plot <- renderPlot({
-
-    ggplot(merge_nochinook, aes(x = year)) +
-      geom_point(aes(y = wtcpue, color = species), alpha = 0.5, size = 1.5) +  # Swap y = average_temp with y = wtcpue
-      geom_line(aes(y = average_temp), color = "red", size = 1.5) + # Swap y = wtcpue with y = average_temp
-      scale_x_discrete(labels = c("Dungeness", "Squid")) +
-      facet_wrap(~ species, scales = "free_y", ncol = 1, labeller = labeller(species = c("squid" = "Squid", "dungeness" = "Dungeness Crab"))) +
-      labs(title = "Squid and Dungeness Crab CPUE vs Temperature",
-           x = "Year",
-           y = "Weighted CPUE") +
-      scale_color_manual(
-        values = c("#603B38", "#CF9555"),
-        breaks = c("squid", "dungeness"),
-        labels = c("Squid", "Dungeness Crab")
-      ) +
-      guides(color = guide_legend(title = "Species")) +
-      theme(strip.background = element_blank(), strip.placement = "outside")+
-      scale_y_continuous(
-        sec.axis = sec_axis(~., name = "Temperature (°C)", breaks = seq(0, 30, by = 5)),
-        name = "Weighted CPUE",
-        limits = c(0, max(merge_nochinook$average_temp) * 3)  # Adjust the limits as needed
-      )
+    filtered <- filtered_data()
+    if (!is_empty(filtered)) {
+      revenue_output <- lm(value_usd ~ average_temp, data = filtered)
+      ggplot(filtered, aes(x = average_temp, y = value_usd)) +
+        geom_point() +
+        labs(x = "Sea Surface Temperature (C)", y = "Revenue in Millions (USD)") +
+        geom_abline(intercept = coef(revenue_output)[1],
+                    slope = coef(revenue_output)[2]) +
+        theme_bw() +
+        scale_y_continuous(labels = scales::label_number(scale = 1e-6))
+    } else {
+      ggplot() + geom_blank() +
+        labs(title = "No data available for selected species")
+    }
   })
-
-}
-# revenue plots
-output$revenue_plot <- renderPlot({
-  filtered <- filtered_data()
-  if (!is_empty(filtered)) {
-    revenue_output <- lm(value_usd ~ average_temp, data = filtered)
-    ggplot(filtered, aes(x = average_temp, y = value_usd)) +
-      geom_point() +
-      labs(x = "Sea Surface Temperature (C)", y = "Revenue in Millions (USD)") +
-      geom_abline(intercept = coef(revenue_output)[1],
-                  slope = coef(revenue_output)[2]) +
-      theme_bw() +
-      scale_y_continuous(labels = scales::label_number(scale = 1e-6))
-  } else {
-    ggplot() + geom_blank() +
-      labs(title = "No data available for selected species")
-  }
-})
 }
 
 }

@@ -24,6 +24,8 @@ squid_temp_rev <- eis %>%
   full_join(temp_df, by = 'year') %>%
   drop_na()
 
+write_csv(x = squid_temp_rev, file = here::here("distribution_app_noaa", "data", "squid_temp_rev.csv"))
+
 squidrev_output<-lm(value_usd ~ average_temp, data=squid_temp_rev) #linear model (lm)
 squidrev_output # gets only the coefficients
 summary(squidrev_output)
