@@ -32,10 +32,15 @@ avg_temp_df <- read_csv("data/average_temp.csv")
 merged_dis_temp <- merge(avg_temp_df, dismap_all_df, by = "year")
 merge_nochinook <- merged_dis_temp[merged_dis_temp$species != "chinook", ]
 
+
+
 # READ IN DATA ---- maddie
 eis <- read_csv("data/eis.csv")
 temp_df <- read_csv("data/average_temp.csv")
-squid_temp_rev <- read_csv("distribution_app_noaa/data/squid_temp_rev.csv")
+
+#### Squid
+###################################################################
+squid_temp_rev <- read_csv("data/squid_temp_rev.csv")
 
 squidrev_output <- lm(value_usd ~ average_temp, data=squid_temp_rev)
 
