@@ -28,6 +28,10 @@ full_dung_squid_urch1 <- read_csv("data/full_dsu.csv")
 dismap_all_df <- read_csv("data/full_dung_squid_chin.csv")
 avg_temp_df <- read_csv("data/average_temp.csv")
 
+#Load Images for TEMP vs CPUE
+squid_image <- readJPEG("shinyapp/www/squid_image.jpg")
+crab_image <- readJPEG("shinyapp/www/crab_image.jpg")
+
 ## Filtering not to include Chinook
 merged_dis_temp <- merge(avg_temp_df, dismap_all_df, by = "year")
 merge_nochinook <- merged_dis_temp[merged_dis_temp$species != "chinook", ]
