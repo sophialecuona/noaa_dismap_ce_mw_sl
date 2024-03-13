@@ -55,7 +55,7 @@ ggplot(merge_nochinook, aes(x = year)) +
   ) +
   ggdraw()+
   draw_image("distribution_app_noaa/www/squid_image.jpg", x = -1.80, y = .22, width = 0.35, height = 0.35)
-  draw_image("distribution_app_noaa/www/crab_image.jpeg", x =-1.84, y= .78, width = 0.28, height = 0.28) +
+  draw_image("distribution_app_noaa/www/crab_image.jpeg", x =-1.84, y= .78, width = 0.28, height = 0.28)
 #Want to add pictures to the graph!!
 
 

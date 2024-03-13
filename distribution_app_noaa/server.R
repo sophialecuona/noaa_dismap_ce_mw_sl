@@ -110,7 +110,10 @@ ggplot(merge_nochinook, aes(x = year)) +
     sec.axis = sec_axis(~., name = "Temperature (°C)", breaks = seq(0, 30, by = 5)),
     name = "Weighted CPUE",
     limits = c(0, max(merge_nochinook$average_temp) * 3)  # Adjust the limits as needed
-  )
+  )+
+  ggdraw()+
+  draw_image("distribution_app_noaa/www/squid_image.jpg", x = -1.80, y = .22, width = 0.35, height = 0.35)+
+  draw_image("distribution_app_noaa/www/crab_image.jpeg", x =-1.84, y= .78, width = 0.28, height = 0.28)
 
 #Want to add pictures to the graph!!
 
