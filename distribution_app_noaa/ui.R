@@ -20,7 +20,7 @@ sidebar <- dashboardSidebar(
     menuItem(text = "Revenue", tabName = "revenue", icon = icon("usd")),
     menuItem(text = "CPUE", tabName = "cpue", icon = icon("fire"))
 
-  ) # END sidebarMenu
+  )# END sidebarMenu
 ) # END dashboardSidebar
 
 #..........................dashboardBody.........................
@@ -157,26 +157,41 @@ body <- dashboardBody(
 
     # revenue tabItem ----
     tabItem(tabName = "revenue",
-
-            # fluidRow ----
             fluidRow(
-
-              # input box ----
-              box(width = 4, height = 500,
+              column(
+                width = 6,
+                height = 300,
+                box(
                   title = tags$strong("Select Species:"),
-                  checkboxGroupInput(inputId = "species_select_input",
-                                     label = "Select Species:",
-                                     choices = c("dungeness", "squid", "urchin"),
-                                     selected = "dungeness")
-              ), # END input box
-
-              box(width = 8, height = 500,
-                  title = tags$strong("Revenue Plots"),
-                  plotOutput(outputId = "revenue_plot")
+                  radioButtons(
+                    inputId = "species_choice_input",
+                    label = "Select Species:",
+                    choices = c("Dungeness crab", "Market squid", "Red sea urchin"),
+                    selected = "Dungeness crab"
+                  )
+                )
+              ),
+              column(
+                width = 6,
+                height = 800,
+                box(
+                  title = tags$strong("Revenue Plot"),
+                  plotOutput(outputId = "species_revenue_plot")
+                )
               ) # END plot box
+            ), # END fluidRow
+
+            fluidRow(
+              column(
+                width = 12,
+                height = 800,
+                box(
+                  title = tags$strong("Coefficients Table"),
+                  tableOutput(outputId = "coefficients_table")
+                )
+              ) # END coefficients table box
             ) # END fluidRow
-    ) # END revenue tabItem
-  ) # END fluidPage
+    ), # END revenue tabItem
 
     # cpue tabItem ----
     tabItem(tabName = "cpue",
@@ -221,7 +236,7 @@ body <- dashboardBody(
 
   ) # END tabItems
 
-) # END dashboardBody
+ ) # END dashboardBody
 
 #..................combine all in dashboardPage..................
 dashboardPage(header, sidebar, body)

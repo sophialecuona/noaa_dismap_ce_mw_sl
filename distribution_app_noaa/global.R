@@ -14,6 +14,8 @@ library(janitor)
 library(cowplot)
 library(patchwork)
 library(dplyr)
+library(ggplot2)
+library(kableExtra)
 
 #devtools::install_github("cfree14/wcfish", force=T)
 library(wcfish)
@@ -35,3 +37,7 @@ merge_nochinook <- merged_dis_temp[merged_dis_temp$species != "chinook", ]
 # READ IN DATA ---- maddie
 eis <- read_csv("data/eis.csv")
 temp_df <- read_csv("data/average_temp.csv")
+all_revenue <- read_csv("data/all_revenue.csv")
+squid_temp_rev <- read_csv("data/squid_temp_rev.csv")
+dung_temp_rev <- read_csv("data/dung_temp_rev.csv")
+urchin_temp_rev <- read_csv("data/urchin_temp_rev.csv")
