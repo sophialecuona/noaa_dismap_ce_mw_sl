@@ -11,6 +11,7 @@ library(dplyr)
 library(grid)
 library(png)
 library(jpeg)
+library(magick)
 
 
 #Putting data in
@@ -30,7 +31,7 @@ merge_nochinook <- merged_dis_temp[merged_dis_temp$species != "chinook", ]
 
 #Load Images
 squid_image <- readJPEG("distribution_app_noaa/www/squid_image.jpg")
-crab_image <- readJPEG("distribution_app_noaa/www/crab_image.jpg")
+crab_image <- readJPEG("distribution_app_noaa/www/crab_image.jpeg")
 
 ggplot(merge_nochinook, aes(x = year)) +
   geom_point(aes(y = wtcpue, color = species), alpha = 0.5, size = 1.5) +  # Swap y = average_temp with y = wtcpue
@@ -52,13 +53,9 @@ ggplot(merge_nochinook, aes(x = year)) +
     name = "Weighted CPUE",
     limits = c(0, max(merge_nochinook$average_temp) * 3)  # Adjust the limits as needed
   ) +
-  annotation_custom(rasterGrob(squid_image, width = unit(1, "native"), height = unit(1, "native")),
-                    xmin = 1, xmax = 2, ymin = 1, ymax = 2)
-
-#+
-  #annotation_custom(rasterGrob(crab_image, width = unit(0.2, "native"), height = unit(0.2, "native")),
-                    #xmin = 2, xmax = 2, ymin = 2, ymax = 2)
-
+  ggdraw()+
+  draw_image("distribution_app_noaa/www/squid_image.jpg", x = -1.80, y = .22, width = 0.35, height = 0.35)
+  draw_image("distribution_app_noaa/www/crab_image.jpeg", x =-1.84, y= .78, width = 0.28, height = 0.28) +
 #Want to add pictures to the graph!!
 
 
