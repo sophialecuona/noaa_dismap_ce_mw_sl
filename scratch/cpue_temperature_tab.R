@@ -29,8 +29,8 @@ merge_nochinook <- merged_dis_temp[merged_dis_temp$species != "chinook", ]
 ###  Temp vs Year vs CPUE
 
 #Load Images
-squid_image <- readJPEG("shinyapp/www/squid_image.jpg")
-crab_image <- readJPEG("shinyapp/www/crab_image.jpg")
+squid_image <- readJPEG("distribution_app_noaa/www/squid_image.jpg")
+crab_image <- readJPEG("distribution_app_noaa/www/crab_image.jpg")
 
 ggplot(merge_nochinook, aes(x = year)) +
   geom_point(aes(y = wtcpue, color = species), alpha = 0.5, size = 1.5) +  # Swap y = average_temp with y = wtcpue
@@ -53,9 +53,11 @@ ggplot(merge_nochinook, aes(x = year)) +
     limits = c(0, max(merge_nochinook$average_temp) * 3)  # Adjust the limits as needed
   ) +
   annotation_custom(rasterGrob(squid_image, width = unit(1, "native"), height = unit(1, "native")),
-                    xmin = 1, xmax = 2, ymin = 1, ymax = 2) +
-  annotation_custom(rasterGrob(crab_image, width = unit(0.2, "native"), height = unit(0.2, "native")),
-                    xmin = 2, xmax = 2, ymin = 2, ymax = 2)
+                    xmin = 1, xmax = 2, ymin = 1, ymax = 2)
+
+#+
+  #annotation_custom(rasterGrob(crab_image, width = unit(0.2, "native"), height = unit(0.2, "native")),
+                    #xmin = 2, xmax = 2, ymin = 2, ymax = 2)
 
 #Want to add pictures to the graph!!
 
