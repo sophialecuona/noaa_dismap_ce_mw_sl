@@ -2,4 +2,5 @@ NOAA Fisheries. 2022. DisMAP data records. Retrieved from apps-st.fisheries.noaa
 
 Free, C. (2024). wcfish: R Package for accessing fisheries data. GitHub. https://github.com/cfree14/wcfish. Accessed 2/29/2024.
 
-NOAA. 2023. ERDADAP data records. Retrieved from https://coastwatch.pfeg.noaa.gov/erddap/index.html. Accessed 2/28/2024.
+NOAA. 2023. ERDDAP data records. Retrieved from https://coastwatch.pfeg.noaa.gov/erddap/index.html. Accessed 2/28/2024.
+
