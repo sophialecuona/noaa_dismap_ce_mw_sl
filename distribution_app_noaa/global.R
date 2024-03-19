@@ -16,6 +16,7 @@ library(patchwork)
 library(dplyr)
 library(ggplot2)
 library(kableExtra)
+library(jpeg)
 
 #devtools::install_github("cfree14/wcfish", force=T)
 library(wcfish)
@@ -31,8 +32,8 @@ dismap_all_df <- read_csv("data/full_dung_squid_chin.csv")
 avg_temp_df <- read_csv("data/average_temp.csv")
 
 #Load Images for TEMP vs CPUE
-squid_image <- readJPEG("distribution_app_noaa/www/squid_image.jpg")
-crab_image <- readJPEG("distribution_app_noaa/www/crab_image.jpeg")
+# squid_image <- readJPEG("distribution_app_noaa/www/squid_image.jpg")
+# crab_image <- readJPEG("distribution_app_noaa/www/crab_image.jpeg")
 
 ## Filtering not to include Chinook
 merged_dis_temp <- merge(avg_temp_df, dismap_all_df, by = "year")
