@@ -203,11 +203,9 @@ body <- dashboardBody(
                   title = tags$strong("Adjust depth ranges:"),
 
                   # sliderInputs ----
-                  sliderInput(inputId = "year_input", label = "Years surveyed:",
-                              min = min(merge_nochinook$year), max = max(merge_nochinook$year),
-                              value = c(min(merge_nochinook$year), max(merge_nochinook$year)),
-                              sep = "")
-
+                  selectInput("species_dropdown", "Select Species:",
+                              choices = unique(dismap_all_df$species),
+                              selected = unique(dismap_all_df$species)[1])
               ), # END input box
 
               box(width = 8, height = 500,
@@ -215,9 +213,9 @@ body <- dashboardBody(
                   title = tags$strong("WCPUE by Temperature"),
 
                   # cpue output ----
-                  plotOutput(outputId = "cpue_temp")
+                  plotOutput(outputId = "cpue_plot")
 
-              ) # END leaflet box
+              ) # END box
 
             ) # END fluidRow
 

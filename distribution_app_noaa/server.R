@@ -91,42 +91,50 @@ server <- function(input, output) {
     broom::tidy(species_lm)
   })
 
-ggplot(merge_nochinook, aes(x = year)) +
-  geom_point(aes(y = wtcpue, color = species), alpha = 0.5, size = 1.5) +  # Swap y = average_temp with y = wtcpue
-  geom_line(aes(y = average_temp), color = "red", size = 1.5) + # Swap y = wtcpue with y = average_temp
-  scale_x_discrete(labels = c("Dungeness", "Squid")) +
-  facet_wrap(~ species, scales = "free_y", ncol = 1, labeller = labeller(species = c("squid" = "Squid", "dungeness" = "Dungeness Crab"))) +
-  labs(title = "Squid and Dungeness Crab CPUE vs Temperature",
-       x = "Year",
-       y = "Weighted CPUE") +
-  scale_color_manual(
-    values = c("#603B38", "#CF9555"),
-    breaks = c("squid", "dungeness"),
-    labels = c("Squid", "Dungeness Crab")
-  ) +
-  guides(color = guide_legend(title = "Species")) +
-  theme(strip.background = element_blank(), strip.placement = "outside")+
-  scale_y_continuous(
-    sec.axis = sec_axis(~., name = "Temperature (°C)", breaks = seq(0, 30, by = 5)),
-    name = "Weighted CPUE",
-    limits = c(0, max(merge_nochinook$average_temp) * 3)  # Adjust the limits as needed
-  )+
-  ggdraw()+
-  draw_image("distribution_app_noaa/www/squid_image.jpg", x = -1.80, y = .22, width = 0.35, height = 0.35)+
-  draw_image("distribution_app_noaa/www/crab_image.jpeg", x =-1.84, y= .78, width = 0.28, height = 0.28)
+  output$squid_dungeness_plot <- renderPlot({
+    ggplot(merge_nochinook, aes(x = year)) +
+      geom_point(aes(y = wtcpue, color = species), alpha = 0.5, size = 1.5) +
+      geom_line(aes(y = average_temp), color = "red", size = 1.5) +
+      scale_x_discrete(labels = c("Dungeness", "Squid")) +
+      facet_wrap(~ species, scales = "free_y", ncol = 1, labeller = labeller(species = c("squid" = "Squid", "dungeness" = "Dungeness Crab"))) +
+      labs(
+        title = "Squid and Dungeness Crab CPUE vs Temperature",
+        x = "Year",
+        y = "Weighted CPUE"
+      ) +
+      scale_color_manual(
+        values = c("#603B38", "#CF9555"),
+        breaks = c("squid", "dungeness"),
+        labels = c("Squid", "Dungeness Crab")
+      ) +
+      guides(color = guide_legend(title = "Species")) +
+      theme(strip.background = element_blank(), strip.placement = "outside") +
+      scale_y_continuous(
+        sec.axis = sec_axis(~., name = "Temperature (°C)", breaks = seq(0, 30, by = 5)),
+        name = "Weighted CPUE",
+        limits = c(0, max(merge_nochinook$average_temp) * 3)
+      )
+  })
+  #Bubble chart
 
-#Want to add pictures to the graph!!
+  selected_data <- reactive({
+    selected_species <- input$species_dropdown
+    filtered_data <- dismap_all_df %>%
+      filter(species == selected_species)
+    return(filtered_data)
+  })
 
-#### Non-temperature but super cool graphs
-
-#Bubble chart
-ggplot(dismap_all_df, aes(x = year, y = wtcpue, color = species, size = depth)) +
-  geom_point(alpha = 0.6)+
-  scale_size(range = c(.1, 10), name="Depth (m)")+
-  labs(title = "CPUE vs. Species vs. Depth",
-       x = "Year",
-       y = "Weighted Catch Per Unit Effort (CPUE)",
-       color = "Species Type")+
-  scale_color_manual(values = c("#74E291", "#59B4C3", "#211C6A"))+
-  theme_minimal()
+  output$cpue_plot <- renderPlot({
+    ggplot(selected_data(), aes(x = year, y = wtcpue, color = species, size = depth)) +
+      geom_point(alpha = 0.6) +
+      scale_size(range = c(.1, 10), name = "Depth (m)") +
+      labs(
+        title = paste("CPUE vs. Species vs. Depth -", unique(selected_data()$species)),
+        x = "Year",
+        y = "Weighted Catch Per Unit Effort (CPUE)",
+        color = "Species Type"
+      ) +
+      scale_color_manual(values = c("mediumturquoise")) +
+      theme_minimal()
+  })
 }
