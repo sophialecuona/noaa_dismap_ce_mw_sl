@@ -96,7 +96,7 @@ body <- dashboardBody(
               # input box ----
               box(width = 4, height = 500,
 
-                  title = tags$strong("Adjust depth ranges:"),
+                  title = tags$strong("Species:"),
 
                   # sliderInputs ----
                   sliderInput(inputId = "depth_slider_input", label = "Depth (*meters* below SL):",
