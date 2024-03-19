@@ -17,7 +17,10 @@ library(dplyr)
 library(ggplot2)
 library(kableExtra)
 library(jpeg)
+<<<<<<< HEAD
 library(magick)
+=======
+>>>>>>> 0675a7c5e04faed443399e6ed7d1e979bd88dbc7
 
 #devtools::install_github("cfree14/wcfish", force=T)
 library(wcfish)
@@ -32,6 +35,13 @@ full_dung_squid_urch1 <- read_csv("data/full_dsu.csv")
 dismap_all_df <- read_csv("data/full_dung_squid_chin.csv")
 avg_temp_df <- read_csv("data/average_temp.csv")
 
+<<<<<<< HEAD
+=======
+#Load Images for TEMP vs CPUE
+# squid_image <- readJPEG("distribution_app_noaa/www/squid_image.jpg")
+# crab_image <- readJPEG("distribution_app_noaa/www/crab_image.jpeg")
+
+>>>>>>> 0675a7c5e04faed443399e6ed7d1e979bd88dbc7
 ## Filtering not to include Chinook
 merged_dis_temp <- merge(avg_temp_df, dismap_all_df, by = "year")
 merge_nochinook <- merged_dis_temp[merged_dis_temp$species != "chinook", ]

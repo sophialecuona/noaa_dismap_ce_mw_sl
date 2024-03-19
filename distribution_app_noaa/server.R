@@ -71,12 +71,17 @@ server <- function(input, output) {
 
     species_lm <- lm(value_usd ~ average_temp, data = species_data)
 
-    ggplot(species_data, aes(x = average_temp, y = value_usd)) +
+    ggplot(species_data, aes(x = average_temp, y = value_usd, color = input$species_choice_input)) +
       geom_point() +
       geom_abline(intercept = coef(species_lm)[1], slope = coef(species_lm)[2]) +
       labs(x = "Sea Surface Temperature (C)", y = "Revenue in Millions (USD)") +
       theme_bw() +
-      scale_y_continuous(labels = scales::label_number(scale = 1e-6))
+      scale_y_continuous(labels = scales::label_number(scale = 1e-6)) +
+      scale_color_manual(values = c("Market squid" = "#818589",
+                                    "Dungeness crab" = "orange",
+                                    "Red sea urchin" = "darkred"),
+                         name = "Species")
+
   })
 
   output$coefficients_table <- renderTable({
